@@ -1,0 +1,17 @@
+{
+  "name": "nedbDemo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.12.2",
+    "express-handlebars": "^3.0.0",
+    "nedb": "^1.1.1"
+  }
+}

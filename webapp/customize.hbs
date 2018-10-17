@@ -171,6 +171,7 @@
 		var cameraPosition;
 		var cameraTarget;
 		var currentDefectToUpdate;
+		var currentAnnotationToUpdate;
 
 		var iframe = document.getElementById('api-frame');
 		var urlid = 'dbf6450b82a4461c9393dda70fb66a43';
@@ -190,6 +191,7 @@
 				if (index != -1) {
 					api.getAnnotation(index, function (err, info) {
 						if (info) {
+							currentAnnotationToUpdate = info;
 							currentDefectToUpdate = annolist[info.order - 1];
 							setFormDetails(currentDefectToUpdate);
 						}
@@ -230,7 +232,7 @@
 						camPos: cameraPosition,
 						camTarget: cameraTarget,
 						title: 'Title',
-						descr: 'Description',
+						content: 'Description',
 					};
 					api.createAnnotation(
 						[currentAnnotationToCreate.pox, currentAnnotationToCreate.poy, currentAnnotationToCreate.poz],
@@ -238,7 +240,7 @@
 						currentAnnotationToCreate.camPos,
 						currentAnnotationToCreate.camTarget,
 						currentAnnotationToCreate.title,
-						currentAnnotationToCreate.descr,
+						currentAnnotationToCreate.content,
 						function (index) {
 							// console.log('added hotspot: ' + index);
 							// api.removeAnnotation(index);
@@ -253,7 +255,7 @@
 
 			function setFormDetails(info) {
 				$('#annoName').val(info.title);
-				$('#annoDescr').val(info.descr);
+				$('#annoDescr').val(info.content);
 			}
 			api.start(function () {
 
@@ -264,7 +266,11 @@
 
 				document.getElementById('createAnno').addEventListener('click', function () {
 					currentDefectToUpdate.title = $('#annoName').val();
-					currentDefectToUpdate.descr = $('#annoDescr').val();
+					currentDefectToUpdate.content = $('#annoDescr').val();
+					api.updateAnnotation(currentAnnotationToUpdate.order, {
+						title: currentDefectToUpdate.title,
+						content: currentDefectToUpdate.content
+					})
 					// var annoposObj = {
 					// 	pox: $('#positionX').val(),
 					// 	poy: $('#positionY').val(),
@@ -275,7 +281,7 @@
 					// 	camPos: [$('#cameraX').val(), $('#cameraY').val(), $('#cameraZ').val()],
 					// 	camTarget: [$('#targetX').val(), $('#targetY').val(), $('#targetZ').val()],
 					// 	title: $('#annoName').val(),
-					// 	descr: $('#annoDescr').val(),
+					// 	content: $('#annoDescr').val(),
 					// };
 
 
@@ -292,7 +298,7 @@
 					// 		// 	obj.camPos,
 					// 		// 	obj.camTarget,
 					// 		// 	obj.title,
-					// 		// 	obj.descr,
+					// 		// 	obj.content,
 					// 		// 	function (index) {
 					// 		// 		console.log('added hotspot: ' + index);
 					// 		// 		api.removeAnnotation(index);
@@ -314,7 +320,7 @@
 							obj.camPos,
 							obj.camTarget,
 							obj.title,
-							obj.descr,
+							obj.content,
 							function (index) {
 								console.log('added hotspot: ' + index);
 								api.removeAnnotation(index);

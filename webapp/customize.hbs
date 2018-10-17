@@ -75,7 +75,7 @@
 										<hr>
 									</div>
 									<!--Body-->
-									<div class="md-form">
+									<div class="md-form" style="display: none">
 										<div class="col">
 											Positionx: <input id="positionX" value="0">
 										</div>
@@ -162,8 +162,15 @@
 		targetX = 0;
 		targetY = 0;
 		targetZ = 0;
-
-
+		positionX = 0;
+		positionY = 0;
+		positionZ = 0;
+		normalX = 0;
+		normalY = 0;
+		normalZ = 0;
+		var cameraPosition;
+		var cameraTarget;
+		var currentDefectToUpdate;
 
 		var iframe = document.getElementById('api-frame');
 		var urlid = 'dbf6450b82a4461c9393dda70fb66a43';
@@ -175,45 +182,53 @@
 		// var client = new Sketchfab( '1.3.0', iframe );
 
 		function onSuccess(api) {
+			api.setCameraEasing('easeOutSextic');
 			document.getElementById('markAnno').addEventListener('click', function () {
 				markDefectMode = true;
 			});
+			api.addEventListener('annotationSelect', function (index) {
+				if (index != -1) {
+					api.getAnnotation(index, function (err, info) {
+						if (info) {
+							currentDefectToUpdate = annolist[info.order - 1];
+							setFormDetails(currentDefectToUpdate);
+						}
+					});
+				}
+			});
 			api.addEventListener('click', function (info) {
-				if (info.position3D !== null && markDefectMode) {
+				if (info.position2D !== null && markDefectMode) {
 					markDefectMode = false;
-					$('#positionX').val(info.position3D[0]);
-					$('#positionY').val(info.position3D[1]);
-					$('#positionZ').val(info.position3D[2]);
-					$('#normalX').val(info.normal[0]);
-					$('#normalY').val(info.normal[1]);
-					$('#normalZ').val(info.normal[2]);
+					positionX = info.position3D[0];
+					positionY = info.position3D[1];
+					positionZ = info.position3D[2];
+					normalX = info.normal[0];
+					normalY = info.normal[1];
+					normalZ = info.normal[2];
+
+					// $('#positionX').val(info.position3D[0]);
+					// $('#positionY').val(info.position3D[1]);
+					// $('#positionZ').val(info.position3D[2]);
+					// $('#normalX').val(info.normal[0]);
+					// $('#normalY').val(info.normal[1]);
+					// $('#normalZ').val(info.normal[2]);
 
 					api.getCameraLookAt(function (err, camera) {
-						cameraX = camera.position[0];
-						cameraY = camera.position[1];
-						cameraZ = camera.position[2];
-						targetX = camera.position[0];
-						targetY = camera.position[1];
-						targetZ = camera.position[2];
-						$('#cameraX').val(camera.position[0]);
-						$('#cameraY').val(camera.position[1]);
-						$('#cameraZ').val(camera.position[2]);
-						$('#targetX').val(camera.target[0]);
-						$('#targetY').val(camera.target[1]);
-						$('#targetZ').val(camera.target[2]);
+						cameraPosition = camera.position;
+						cameraTarget = camera.target;
 						document.getElementById('createAnno').disabled = false;
 						document.getElementById('annoRes').style.display = "hidden";
 
 					});
 					currentAnnotationToCreate = {
-						pox: $('#positionX').val(),
-						poy: $('#positionY').val(),
-						poz: $('#positionZ').val(),
-						nox: $('#normalX').val(),
-						noy: $('#normalX').val(),
-						noz: $('#normalX').val(),
-						camPos: [cameraX, cameraY, cameraZ],
-						camTarget: [targetX, targetY, targetZ],
+						pox: positionX,
+						poy: positionY,
+						poz: positionZ,
+						nox: normalX,
+						noy: normalY,
+						noz: normalZ,
+						camPos: cameraPosition,
+						camTarget: cameraTarget,
 						title: 'Title',
 						descr: 'Description',
 					};
@@ -225,17 +240,21 @@
 						currentAnnotationToCreate.title,
 						currentAnnotationToCreate.descr,
 						function (index) {
-							console.log('added hotspot: ' + index);
-							api.removeAnnotation(index);
+							// console.log('added hotspot: ' + index);
+							// api.removeAnnotation(index);
 						}
 					);
+					annolist.push(currentAnnotationToCreate);
 				}
 			}, {
 				pick: 'fast'
 			});
 
 
-
+			function setFormDetails(info) {
+				$('#annoName').val(info.title);
+				$('#annoDescr').val(info.descr);
+			}
 			api.start(function () {
 
 				$('#loadAnno').click(function () {
@@ -244,48 +263,50 @@
 				console.log('started');
 
 				document.getElementById('createAnno').addEventListener('click', function () {
-					{
-						// var annoposObj = {
-						// 	pox: $('#positionX').val(),
-						// 	poy: $('#positionY').val(),
-						// 	poz: $('#positionZ').val(),
-						// 	nox: $('#normalX').val(),
-						// 	noy: $('#normalX').val(),
-						// 	noz: $('#normalX').val(),
-						// 	camPos: [$('#cameraX').val(), $('#cameraY').val(), $('#cameraZ').val()],
-						// 	camTarget: [$('#targetX').val(), $('#targetY').val(), $('#targetZ').val()],
-						// 	title: $('#annoName').val(),
-						// 	descr: $('#annoDescr').val(),
-						// };
-					}
+					currentDefectToUpdate.title = $('#annoName').val();
+					currentDefectToUpdate.descr = $('#annoDescr').val();
+					// var annoposObj = {
+					// 	pox: $('#positionX').val(),
+					// 	poy: $('#positionY').val(),
+					// 	poz: $('#positionZ').val(),
+					// 	nox: $('#normalX').val(),
+					// 	noy: $('#normalX').val(),
+					// 	noz: $('#normalX').val(),
+					// 	camPos: [$('#cameraX').val(), $('#cameraY').val(), $('#cameraZ').val()],
+					// 	camTarget: [$('#targetX').val(), $('#targetY').val(), $('#targetZ').val()],
+					// 	title: $('#annoName').val(),
+					// 	descr: $('#annoDescr').val(),
+					// };
 
-					$.ajax({
-						type: 'POST',
-						url: '/saveAnnotation',
-						data: currentAnnotationToCreate,
-						success: function (obj) {
-							document.getElementById('createAnno').disabled = true;
-							document.getElementById('annoRes').style.display = "block";
-							// api.createAnnotation(
-							// 	[obj.pox, obj.poy, obj.poz],
-							// 	[obj.nox, obj.noy, obj.noz],
-							// 	obj.camPos,
-							// 	obj.camTarget,
-							// 	obj.title,
-							// 	obj.descr,
-							// 	function (index) {
-							// 		console.log('added hotspot: ' + index);
-							// 		api.removeAnnotation(index);
 
-							// 	}
-							// );
-							// 
-						}
-					});
+					// $.ajax({
+					// 	type: 'POST',
+					// 	url: '/saveAnnotation',
+					// 	data: currentAnnotationToCreate,
+					// 	success: function (obj) {
+					// 		document.getElementById('createAnno').disabled = true;
+					// 		document.getElementById('annoRes').style.display = "block";
+					// 		// api.createAnnotation(
+					// 		// 	[obj.pox, obj.poy, obj.poz],
+					// 		// 	[obj.nox, obj.noy, obj.noz],
+					// 		// 	obj.camPos,
+					// 		// 	obj.camTarget,
+					// 		// 	obj.title,
+					// 		// 	obj.descr,
+					// 		// 	function (index) {
+					// 		// 		console.log('added hotspot: ' + index);
+					// 		// 		api.removeAnnotation(index);
+
+					// 		// 	}
+					// 		// );
+					// 		// 
+					// 	}
+					// });
 				});
 
 				api.addEventListener('viewerready', function () {
 					annolist.forEach(function (obj) {
+
 						console.log('inside create', obj)
 						api.createAnnotation(
 							[obj.pox, obj.poy, obj.poz],

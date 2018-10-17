@@ -242,8 +242,10 @@
 						currentAnnotationToCreate.title,
 						currentAnnotationToCreate.content,
 						function (index) {
-							// console.log('added hotspot: ' + index);
-							// api.removeAnnotation(index);
+							api.updateAnnotation(index, {
+								title: currentAnnotationToCreate.title,
+								content: currentAnnotationToCreate.content
+							})
 						}
 					);
 					annolist.push(currentAnnotationToCreate);
@@ -270,7 +272,7 @@
 					api.updateAnnotation(currentAnnotationToUpdate.order, {
 						title: currentDefectToUpdate.title,
 						content: currentDefectToUpdate.content
-					})
+					});
 					// var annoposObj = {
 					// 	pox: $('#positionX').val(),
 					// 	poy: $('#positionY').val(),

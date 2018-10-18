@@ -12,68 +12,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"  crossorigin="anonymous"></script>
 	
-	<style>
-		.nav-sdm{
-		background: #0da6e0;
-		    border-radius: 6px;
-					padding: 8px;
-		}
-		.klmbackground-img{
-		  background-image: url('https://imgproc.airliners.net/photos/airliners/7/6/8/2049867.jpg?v=v40');
-			background-repeat: no-repeat;
-			background-size: cover;
-			  
-		}
-		.nav-sdm a.navbar-brand strong{
-			color:#ffff;
-			font-weight: 100;
-		}
-		.card,#annoName, #annoDescr{   
-			 border-color: #00a1de;
-			 }
-
-		#createAnno{  
-				color: #fff;
-    		background: #4fb3e3;
-		}
-		.btn.disabled, .btn:disabled {
-    opacity: .65;
-    color: #fff;
-    background-color: #e77b2f;
-    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12);
-    border: solid 1px #e77b2f;
-		}
-			h1.flight-details{
-			color:#fff;
-			font-size: 40px;
-		}
-		row .pt-3{
-			padding-top: 3% !important;
-		}
-		.margin-toop-descrp{
-    margin-top: 17%;
-		}
-		h3{    
-			font-weight: 300;
-			}
-			.g-legal-footer{
-    margin-top: 1px;
-    background-color: #FFF;
-    padding: 10px 0;
-    text-align: center;
-	}
-	.klm-img{
-	background-image: url('	https://kassa.bnnvara.nl/data/image/i/33000/mod_media_image/33297.w400.r400-225.b78ee01.png');
-		background-repeat: no-repeat;
-		height: 42px;
-    width: 105px;
-    background-size: 93%;
-	}
-	.pad-border{
-		border-right: 1px solid #eaeaea;
-    padding-right: 18px;
-		}
-		</style>
 	
 	
 </head>
@@ -83,12 +21,10 @@
 <header>
   <!--Navbar-->
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar">
-    <div class="container nav-sdm">
-       <a class="klm-img"></a>
-			<a class="navbar-brand">
-        <strong>Structural Damage Reporting</strong>
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <strong>SDM</strong>
       </a>
-			 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-7" aria-controls="navbarSupportedContent-7" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -110,17 +46,16 @@
   </nav>
   <!-- Navbar -->
   <!-- Full Page Intro -->
-  {{!-- <div class="view" style="background-image: url('https://mdbootstrap.com/img/Photos/Others/images/31.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;"> --}}
-    <div class="view" style="background-image: url('/klmHanger.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;"></div>
-		<!-- Mask & flexbox options-->
-    <div class="klmbackground-img mask rgba-indigo-strong d-flex justify-content-center align-items-center">
+  <div class="view" style="background-image: url('https://mdbootstrap.com/img/Photos/Others/images/31.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+    <!-- Mask & flexbox options-->
+    <div class="mask rgba-indigo-strong d-flex justify-content-center align-items-center">
       <!-- Content -->
       <div class="container">
         <!--Grid row-->
-        <div class="row mt-lg-5">
+        <div class="row pt-lg-5 mt-lg-5">
           <!--Grid column-->
-          <div class="pt-3 col-md-6 mb-5 mt-md-0 mt-5 white-text text-center text-md-left wow fadeInLeft" data-wow-delay="0.3s">
-            <h1 class="flight-details">A-321</h1>
+          <div class="col-md-6 mb-5 mt-md-0 mt-5 white-text text-center text-md-left wow fadeInLeft" data-wow-delay="0.3s">
+            <h1 class="display-4 font-weight-bold">A-321</h1>
             <hr class="hr-light">
             <h6 class="mb-3">
 				<iframe src="" id="api-frame" height="500" width="500"></iframe>
@@ -131,7 +66,7 @@
           <!--Grid column-->
           <div class="col-md-6 col-xl-5 mb-4">
             <!--Form-->
-            <div class="margin-toop-descrp card wow fadeInRight" data-wow-delay="0.3s">
+            <div class="card wow fadeInRight" data-wow-delay="0.3s">
               <div class="card-body z-depth-2">
                 <!--Header-->
                 <div class="text-center">
@@ -170,7 +105,7 @@
 				   {{/each}} 
 				  </tbody>
 				  <tfoot>
-					{{!-- <tr>
+					<tr>
 					  <th>Defect Id
 					  </th>
 					  <th>Title
@@ -179,7 +114,7 @@
 					  </th>      
 					  <th>Creation date
 					  </th>      
-					</tr> --}}
+					</tr>
 				  </tfoot>
 			</table>
                 
@@ -197,49 +132,14 @@
     <!-- Mask & flexbox options-->
   </div>
   <!-- Full Page Intro -->
-	<nav class="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar">
-    <div class="container nav-sdm">
-      <a class="navbar-brand">
-        <strong>Structural Damage Reporting</strong>
-      </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-7" aria-controls="navbarSupportedContent-7" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent-7">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item ">
-            <a class="nav-link" href="\">Add Defect
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="\getAnnotationList">Defects</a>
-          </li>
-          
-        </ul>
-        
-      </div>
-    </div>
-  </nav>
 </header>
-<footer>
-<div class="g-legal-footer">
-    <div class="g-grid--row">
-        <a href="https://www.klm.com/travel/nl_nl/meta/sitemap/sitemap.htm" target="_self">Site map</a>
-        
-        <a href="https://www.klm.com/travel/nl_nl/customer_support/customer_support/legal_information/index.htm" target="_self">Juridische informatie</a>
-        
-        <a href="https://www.klm.com/travel/nl_nl/customer_support/copyright_klm/index.htm" target="_self">© 2018 KLM</a>
-    </div>
-</div>
-</footer>
 <!-- Main navigation -->
 	
     <!-- Initialize the viewer -->
     <script type="text/javascript">
 	
 	function showAnno(obj) {
-		//alert(obj);
+		alert(obj);
 	}
 	
 	

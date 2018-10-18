@@ -1,154 +1,377 @@
 <html>
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Sketchfab Viewer API example</title>
-	<!-- Insert this script -->
-	<script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.3.1.js"></script>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sketchfab Viewer API example</title>
+    <!-- Insert this script -->
+    <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.3.1.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<style>
+	body{
+    background: black;
+    }
+    .structural-head{
+    background: #0da6e0;
+    }
+    .structural-head a, .model-specific label{
+    color: #fff;
+    font-weight: 100;
+    }
+    .navbar-nav.structural-h2{
+    float:none;
+    }
+    .structural-h2 li{
+    width: 13%;
+    }
+    .structural-h2 li a{
+    color:#00a1de;
+    }
+    .brand{
+    background-image: url("./images/airfrance-klm.jpg");
+    height: 42px;
+    width: 100px;
+    background-size: 89%;
+    background-repeat: no-repeat;
+    background-position: 13px 4px;)
+    }
+	.nav-sdm{
+	background: #0da6e0;
+	border-radius: 6px;
+	padding: 8px;
+	}
+	.klmbackground-img{
+	/*background-image: url('https://c1.staticflickr.com/6/5608/15554800256_07ae878e08_b.jpg');*/
+	background-repeat: no-repeat;
+	background-size: cover;
+	background: black;
+	background-image: linear-gradient(black,#3d463d);
+	}
+	.nav-sdm a.navbar-brand strong, {
+	color:#ffff;
+	font-weight: 100;
+	}
+	.card, #annoName, #annoDescr{
+    border-color: #00a1de;
+	color: #828180;
+	}
+	.btn.disabled, .btn:disabled {
+	opacity: .65;
+	color: #fff;
+	background-color: #e77b2f;
+	box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12);
+	border: solid 1px #e77b2f;
+	}
+	h1.flight-details{
+	color:#fff;
+	font-size: 40px;
+	}
+	row .pt-3{
+	padding-top: 3% !important;
+	}
+	h3{
+	font-weight: 300;
+	}
+	.g-legal-footer{
+    margin-top: 1px;
+    background-color: #FFF;
+    padding: 10px 0;
+    text-align: center;
+	}
+	.klm-img{
+	background-image: url('	https://kassa.bnnvara.nl/data/image/i/33000/mod_media_image/33297.w400.r400-225.b78ee01.png');
+	background-repeat: no-repeat;
+	height: 49px;
+    width: 117px;
+    background-size: 100%;
+	}
+	.pad-border{
+	border-right: 1px solid #eaeaea;
+    padding-right: 18px;
+	}
+	iframe{
+	border: none;
+	}
+	#markAnno{
+	position: absolute;
+    right: 8%;
+    bottom: 11%;
+    width: 16%;
+    color: #ffff;
+    background-color: #e77b2f;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    border: solid 1px #e77b2f;;
+	}
+	.mt-10{
+	margin-top:10px;
+	}
+	.mt-0{
+	margin-top:0px;
+	}
+	.mb-0{
+	margin-bottom:0px;
+	}
+	.btn-klm{
+	width: 20%;
+    color: #ffff;
+    background-color: #e77b2f;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    border: solid 1px #e77b2f;
+    border-radius: 4px;
+    padding: 2%;
+	}
+	@media screen and (max-width: 600px) {
+	  .structural-head div ul:nth-of-type(2){
+	  	display: none;
+	  }
+	  .structural-head div ul li{
+	  	float: left;
+	  }
+	  .structural-head div ul li:nth-of-type(1){
+	  	margin-left: 16%;
+	  }
+	  .structural-head div ul li:nth-of-type(2){
+	  	font-size: 22px;
+	  }
+	  nav.navbar.panel{
+	  	display:none;
+	  }
+	}
+
+	</style>
+	
 </head>
-
 <body>
-
-
+   
+	
 	<!-- Main navigation -->
-	<header>
-		<!--Navbar-->
-		<nav class="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar">
-			<div class="container">
-				<a class="navbar-brand" href="#">
-					<strong>SDM</strong>
-				</a>
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-7"
-				 aria-controls="navbarSupportedContent-7" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="navbarSupportedContent-7">
-					<ul class="navbar-nav mr-auto">
-						<li class="nav-item active">
-							<a class="nav-link" href="\">Add Defect
-								<span class="sr-only">(current)</span>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="\getAnnotationList">Defects</a>
-						</li>
+<header>
 
-					</ul>
-
-				</div>
-			</div>
-		</nav>
-		<!-- Navbar -->
-		<!-- Full Page Intro -->
-		<div class="view" style="background-image: url('https://mdbootstrap.com/img/Photos/Others/images/31.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
-			<!-- Mask & flexbox options-->
-			<div class="mask rgba-indigo-strong d-flex justify-content-center align-items-center">
-				<!-- Content -->
-				<div class="container">
-					<!--Grid row-->
-					<div class="row pt-lg-5 mt-lg-5">
-						<!--Grid column-->
-						<div class="col-md-6 mb-5 mt-md-0 mt-5 white-text text-center text-md-left wow fadeInLeft" data-wow-delay="0.3s">
-							<h1 class="display-4 font-weight-bold">A-321</h1>
-							<hr class="hr-light">
-							<h6 class="mb-3">
-								<iframe src="" id="api-frame" height="500" width="500"></iframe>
-							</h6>
-
-						</div>
-						<!--Grid column-->
-						<!--Grid column-->
-						<div class="col-md-6 col-xl-5 mb-4">
-							<!--Form-->
-							<div class="card wow fadeInRight" data-wow-delay="0.3s">
-								<div class="card-body z-depth-2">
-									<!--Header-->
-									<div class="text-center">
-										<h3 class="dark-grey-text">
-											<strong>Create Defect</strong>
-										</h3>
-										<hr>
-									</div>
-									<!--Body-->
-									<div class="md-form" style="display: none">
-										<div class="col">
-											Positionx: <input id="positionX" value="0">
-										</div>
-										<div class="col">
-											Positiony: <input id="positionY" value="0">
-										</div>
-										<div class="col">
-											Positionz: <input id="positionZ" value="0">
-										</div>
-
-										<div class="col">
-											Normalx: <input id="normalX" value="0">
-										</div>
-										<div class="col">
-											Normaly: <input id="normalY" value="0">
-										</div>
-										<div class="col">
-											Normalz: <input id="normalZ" value="0">
-										</div>
-										<div class="col">
-											Camerax: <input id="cameraX" value="0">
-										</div>
-										<div class="col">
-											Cameray: <input id="cameraY" value="0">
-										</div>
-										<div class="col">
-											Cameraz: <input id="cameraZ" value="0">
-										</div>
-
-										<div class="col">
-											Targetx: <input id="targetX" value="0">
-										</div>
-										<div class="col">
-											Targety: <input id="targetY" value="0">
-										</div>
-										<div class="col">
-											Targetz: <input id="targetZ" value="0">
-										</div>
-									</div>
-									<div class="md-form">
-										<i class="fa fa-user prefix grey-text"></i>
-										<input type="text" id="annoName" class="form-control">
-										<label for="annoName">Title</label>
-									</div>
-									<div class="md-form">
-										<i class="fa fa-envelope prefix grey-text"></i>
-										<input type="text" id="annoDescr" class="form-control">
-										<label for="annoDescr">Description</label>
-									</div>
-									<!--Textarea with icon prefix-->
-
-									<div class="text-center mt-3">
-										<button class="btn btn-indigo" id="createAnno" disabled=true>Save</button>
-										<button class="btn btn-indigo" id="markAnno">Mark</button>
-										<hr>
-										<small id="annoRes" class="form-text text-muted" style="display: none; color: green">Saved Successfully</small>
-									</div>
-								</div>
-							</div>
-							<!--/.Form-->
-						</div>
-						<!--Grid column-->
+<nav class="structural-head">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li class="active klm-img"><a href="#"></a></li>
+      <li><a href="#">Structural Defect Reporting</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#">FAQ</a></li>
+      <li><a href="#"> English</a></li>
+    </ul>
+  </div>
+</nav>
+</header>
+<!--start of Tabs-->
+<nav class="navbar panel">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand brand" href="#"></a>
+    </div>
+    <ul class="nav navbar-nav structural-h2">
+      <li class="active"><a href="#">Defects</a></li>
+      <li><a href="#">Maintenance</a></li>
+      <li><a href="#">Organisation</a></li>
+      <li><a href="#">Processs & Tools</a></li>
+      <li class="text-center"><a href="#">Library</a></li>
+      
+       <li class="pull-right"><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    </ul>
+  </div>
+</nav>
+<!--End of Tabs-->
+ <!--start of model specifications-->
+<div class="model-specific"> 
+<div class="form-group col-md-3">
+      <label for="aircraftmodel">Aircraft Model</label>
+      <select class="form-control" id="aircraftmodel">
+        <option>Boeing 737-900</option>
+        <option>Boeing 737NG</option>
+        <option>Boeing 747-400</option>
+        <option>Boeing 737-800</option>
+      </select>
+ </div>     
+ <div class="form-group col-md-3">
+      <label for="airline">Airlines</label>
+      <select class="form-control" id="airline">
+        <option>KLM</option>
+        <option>Air France</option>
+        <option>Jet Airways</option>
+        <option>Delta</option>
+      </select>
+ </div> 
+ <div class="form-group col-md-3">
+      <label for="registration">Registration Code</label>
+      <select class="form-control" id="registration">
+        <option>PH-BCA</option>
+        <option>PH-AAA</option>
+        <option>PH-ZCA</option>
+        <option>ZH-BCA</option>
+      </select>
+ </div> 
+ 
+ <!--End of model specifications-->
+  <!--Navbar-->
+  <!-- <nav class="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar">
+     <div class="container nav-sdm">
+       <a class="klm-img">
+      </a>
+			<a class="navbar-brand">
+        <strong>Structural Damage Reporting</strong>
+      </a>
+			
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-7" aria-controls="navbarSupportedContent-7" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent-7">
+        <ul class="navbar-nav mr-auto">
+           <li class="nav-item pad-border active">
+            <a class="nav-link" href="\">Add Defect
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item pad-border">
+            <a class="nav-link" href="\getAnnotationList">Defects</a>
+          </li> 
+          
+        </ul>
+        
+      </div>
+    </div>
+  </nav> -->
+  <!-- Navbar -->
+  <!-- Full Page Intro -->
+  {{!-- <div class="view" style="background-image: url('https://mdbootstrap.com/img/Photos/Others/images/31.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+    <!-- Mask & flexbox options--> --}}
+    <div class=" klmbackground-img mask rgba-indigo-strong d-flex justify-content-center align-items-center">
+      <!-- Content -->
+      <div class="container">
+        <!--Grid row-->
+        <div class="row mt-lg-5">
+          <!--Grid column-->
+          <div class="col-md-6 pt-3 mb-5 mt-md-0 mt-5 white-text text-center text-md-left wow fadeInLeft" data-wow-delay="0.3s">
+            <h6 class="mb-3 iframe-height">
+				<iframe src="" id="api-frame" height="500" width="500"></iframe>
+			</h6>
+			 <button class="btn btn-indigo" id="markAnno">Mark</button>
+          </div>
+          <!--Grid column-->
+          <!--Grid column-->
+          <div class="col-md-4 col-xl-5 mb-4">
+            <!--Form-->
+            <div class="card wow fadeInRight" data-wow-delay="0.3s">
+              <div class="card-body z-depth-2">
+                <!--Header-->
+                <div class="text-center">
+                  <h3 class="dark-grey-text">
+                    <strong>Defect Reporting</strong>
+                  </h3>
+                  <hr>
+                </div>
+                <!--Body-->
+				<div class="md-form" style="display: none">
+					<div class="col">
+						Positionx: <input id="positionX" value="0">
 					</div>
-					<!--Grid row-->
+					<div class="col">
+						Positiony: <input id="positionY" value="0">
+					</div>
+					<div class="col">
+						Positionz: <input id="positionZ" value="0">
+					</div>
+					
+					<div class="col">
+						Normalx: <input id="normalX" value="0">
+					</div>
+					<div class="col">
+						Normaly: <input id="normalY" value="0">
+					</div>
+					<div class="col">
+						Normalz: <input id="normalZ" value="0">
+					</div>
+					<div class="col">
+						Camerax: <input id="cameraX" value="0">
+					</div>
+					<div class="col">
+						Cameray: <input id="cameraY" value="0">
+					</div>
+					<div class="col">
+						Cameraz: <input id="cameraZ" value="0">
+					</div>
+					
+					<div class="col">
+						Targetx: <input id="targetX" value="0">
+					</div>
+					<div class="col">
+						Targety: <input id="targetY" value="0">
+					</div>
+					<div class="col">
+						Targetz: <input id="targetZ" value="0">
+					</div>
 				</div>
-				<!-- Content -->
-			</div>
-			<!-- Mask & flexbox options-->
-		</div>
-		<!-- Full Page Intro -->
-	</header>
-	<!-- Main navigation -->
+                <div class="md-form">
+                  <i class="fa fa-user prefix grey-text"></i>
+                  <label for="annoName">Damage Area</label>
+                  <input type="text" id="annoName" class="form-control">
+                </div>
+                <div class="md-form">
+                  <i class="fa fa-envelope prefix grey-text"></i>
+                  <label for="annoDescr">Description</label>
+                  <input type="text" id="annoDescr" class="form-control">
+                </div>
+              
+                <label class="lead mt-10 mb-0">Contacts</label>
+                <hr class="mt-0">
+                <div>
+                  <i class="fa fa-envelope prefix grey-text"></i>
+                  <label>User</label>
+                  <input type="text" class="form-control">
+                </div>
+                <div>
+                  <i class="fa fa-envelope prefix grey-text"></i>
+                  <label>Date</label>
+                  <input type="text" class="form-control">
+                </div>
+                <div>
+                  <i class="fa fa-envelope prefix grey-text"></i>
+                  <label >Hanger Location</label>
+                  <input type="text"  class="form-control">
+                </div>
 
+                <!--Textarea with icon prefix-->
+                
+                <div class="text-center mt-10 mt-3">
+                  <button class="btn-klm" id="createAnno" disabled=true>Save</button>
+                 
+                  <hr>
+					<small id="annoRes" class="form-text text-muted" style="display: none; color: green">Saved Successfully</small>
+                </div>
+              </div>
+            </div>
+            <!--/.Form-->
+          </div>
+          <!--Grid column-->
+        </div>
+        <!--Grid row-->
+      </div>
+      <!-- Content -->
+    </div>
+    <!-- Mask & flexbox options-->
+  </div>
+  <!-- Full Page Intro -->
+
+<footer>
+<div class="g-legal-footer">
+    <div class="g-grid--row">
+        <a href="https://www.klm.com/travel/nl_nl/meta/sitemap/sitemap.htm" target="_self">Site map</a>
+        
+        <a href="https://www.klm.com/travel/nl_nl/customer_support/customer_support/legal_information/index.htm" target="_self">Juridische informatie</a>
+        
+        <a href="https://www.klm.com/travel/nl_nl/customer_support/copyright_klm/index.htm" target="_self">© 2018 KLM</a>
+    </div>
+</div>
+</footer>
+<!-- Main navigation -->
 
 	<!-- Initialize the viewer -->
 	<script type="text/javascript">

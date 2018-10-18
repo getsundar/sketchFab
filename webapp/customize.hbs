@@ -327,17 +327,17 @@
 									<div>
 										<i class="fa fa-envelope prefix grey-text"></i>
 										<label>User</label>
-										<input type="text" class="form-control">
+										<input type="text" id="userName" class="form-control">
 									</div>
 									<div>
 										<i class="fa fa-envelope prefix grey-text"></i>
 										<label>Date</label>
-										<input type="text" class="form-control">
+										<input type="text" id="dateText" class="form-control">
 									</div>
 									<div>
 										<i class="fa fa-envelope prefix grey-text"></i>
 										<label>Hanger Location</label>
-										<input type="text" class="form-control">
+										<input type="text" id="hangerLocation" class="form-control">
 									</div>
 
 									<!--Textarea with icon prefix-->
@@ -426,7 +426,6 @@
 				});
 				api.addEventListener('click', function (info) {
 					if (info.position2D !== null && markDefectMode) {
-						debugger;
 						markDefectMode = false;
 						positionX = info.position3D[0];
 						positionY = info.position3D[1];
@@ -458,6 +457,9 @@
 								camTarget: cameraTarget,
 								title: 'Title',
 								content: 'Description',
+								user:'User',
+								date:'10/18/2018',
+								hangerLocation:'HangerLocation'
 							};
 							api.createAnnotation(
 								[currentAnnotationToCreate.pox, currentAnnotationToCreate.poy, currentAnnotationToCreate.poz],
@@ -467,9 +469,13 @@
 								currentAnnotationToCreate.title,
 								currentAnnotationToCreate.content,
 								function (index) {
+									debugger;
 									api.updateAnnotation(index, {
 										title: currentAnnotationToCreate.title,
-										content: currentAnnotationToCreate.content
+										content: currentAnnotationToCreate.content,
+										title: currentAnnotationToCreate.user,
+										content: currentAnnotationToCreate.date,
+										title: currentAnnotationToCreate.hangerLocation
 									})
 								}
 							);
@@ -484,6 +490,9 @@
 				function setFormDetails(info) {
 					$('#annoName').val(info.title);
 					$('#annoDescr').val(info.content);
+					$('#hangerLocation').val(info.hangerLocation);
+					$('#dateText').val(info.date);
+					$('#userName').val(info.user);
 				}
 				api.start(function () {
 
@@ -495,9 +504,15 @@
 					document.getElementById('createAnno').addEventListener('click', function () {
 						currentDefectToUpdate.title = $('#annoName').val();
 						currentDefectToUpdate.content = $('#annoDescr').val();
+						currentAnnotationToUpdate.hangerLocation=$('#hangerLocation').val();
+						currentAnnotationToUpdate.dateText=$('#dateText').val();
+						currentAnnotationToUpdate.userName=$('#userName').val();
 						api.updateAnnotation(currentAnnotationToUpdate.order, {
 							title: currentDefectToUpdate.title,
-							content: currentDefectToUpdate.content
+							content: currentDefectToUpdate.content,
+							hangerLocation: currentAnnotationToUpdate.hangerLocation,
+							dateText: currentAnnotationToUpdate.dateText,
+							userName: currentAnnotationToUpdate.userName
 						});
 						// var annoposObj = {
 						// 	pox: $('#positionX').val(),

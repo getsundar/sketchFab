@@ -140,9 +140,7 @@
 	  	display:none;
 	  }
 	}
-
 	</style>
-
 </head>
 
 <body>
@@ -150,7 +148,6 @@
 
 	<!-- Main navigation -->
 	<header>
-
 		<nav class="structural-head">
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">
@@ -211,36 +208,6 @@
 				<option>ZH-BCA</option>
 			</select>
 		</div>
-
-		<!--End of model specifications-->
-		<!--Navbar-->
-		<!-- <nav class="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar">
-     <div class="container nav-sdm">
-       <a class="klm-img">
-      </a>
-			<a class="navbar-brand">
-        <strong>Structural Damage Reporting</strong>
-      </a>
-			
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-7" aria-controls="navbarSupportedContent-7" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent-7">
-        <ul class="navbar-nav mr-auto">
-           <li class="nav-item pad-border active">
-            <a class="nav-link" href="\">Add Defect
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item pad-border">
-            <a class="nav-link" href="\getAnnotationList">Defects</a>
-          </li> 
-          
-        </ul>
-        
-      </div>
-    </div>
-  </nav> -->
 		<!-- Navbar -->
 		<!-- Full Page Intro -->
 		{{!-- <div class="view" style="background-image: url('https://mdbootstrap.com/img/Photos/Others/images/31.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
@@ -270,47 +237,6 @@
 										</h3>
 										<hr>
 									</div>
-									<!--Body-->
-									<!-- <div class="md-form" style="display: none">
-										<div class="col">
-											Positionx: <input id="positionX" value="0">
-										</div>
-										<div class="col">
-											Positiony: <input id="positionY" value="0">
-										</div>
-										<div class="col">
-											Positionz: <input id="positionZ" value="0">
-										</div>
-
-										<div class="col">
-											Normalx: <input id="normalX" value="0">
-										</div>
-										<div class="col">
-											Normaly: <input id="normalY" value="0">
-										</div>
-										<div class="col">
-											Normalz: <input id="normalZ" value="0">
-										</div>
-										<div class="col">
-											Camerax: <input id="cameraX" value="0">
-										</div>
-										<div class="col">
-											Cameray: <input id="cameraY" value="0">
-										</div>
-										<div class="col">
-											Cameraz: <input id="cameraZ" value="0">
-										</div>
-
-										<div class="col">
-											Targetx: <input id="targetX" value="0">
-										</div>
-										<div class="col">
-											Targety: <input id="targetY" value="0">
-										</div>
-										<div class="col">
-											Targetz: <input id="targetZ" value="0">
-										</div>
-									</div> -->
 									<div class="md-form">
 										<i class="fa fa-user prefix grey-text"></i>
 										<label for="annoName">Damage Area</label>
@@ -399,26 +325,14 @@
 			var currentDefectToUpdate;
 			var currentAnnotationToUpdate;
 			var sketchFabAPI;
-
 			var iframe = document.getElementById('api-frame');
 			var urlid = 'dbf6450b82a4461c9393dda70fb66a43';
-
 			// By default, the latest version of the viewer API will be used.
 			var client = new Sketchfab(iframe);
-
 			// Alternatively, you can request a specific version.
 			// var client = new Sketchfab( '1.3.0', iframe );
-			function clearForm() {
-				$('#annoName').val('');
-				$('#annoDescr').val('');
-				$('#hangerLocation').val('');
-				$('#dateText').val('');
-				$('#userName').val('');
-				sketchFabAPI.unselectAnnotation();
-			}
-
 			function onSuccess(api) {
-				sketchFabAPI=api;
+				sketchFabAPI = api;
 				api.setCameraEasing('easeOutSextic');
 				document.getElementById('markAnno').addEventListener('click', function () {
 					markDefectMode = true;
@@ -430,6 +344,7 @@
 							if (info) {
 								currentAnnotationToUpdate = info;
 								currentDefectToUpdate = annolist[info.order - 1];
+								//api.lookat(currentDefectToUpdate.position, currentDefectToUpdate.target);
 								setFormDetails(currentDefectToUpdate);
 							}
 						});
@@ -445,7 +360,8 @@
 						normalY = info.normal[1];
 						normalZ = info.normal[2];
 						api.getCameraLookAt(function (err, camera) {
-							cameraPosition = camera.position;
+							currentCamera =
+								cameraPosition = camera.position;
 							cameraTarget = camera.target;
 							document.getElementById('saveAnno').disabled = false;
 							document.getElementById('annoRes').style.display = "hidden";
@@ -479,12 +395,22 @@
 								}
 							);
 							annolist.push(currentAnnotationToCreate);
+							setFormDetails(currentAnnotationToCreate);
 						});
 					}
 				}, {
 					pick: 'fast'
 				});
 
+				function clearForm() {
+					$('#annoName').val('');
+					$('#annoDescr').val('');
+					$('#hangerLocation').val('');
+					$('#dateText').val('');
+					$('#userName').val('');
+					sketchFabAPI.unselectAnnotation();
+					document.getElementById('saveAnno').disabled = true;
+				}
 
 				function setFormDetails(info) {
 					if (info) {

@@ -94,6 +94,7 @@
 	}
 	iframe{
 	border: none;
+	width:100%;
 	}
 	#markAnno{
 	position: absolute;
@@ -123,6 +124,15 @@
     border-radius: 4px;
     padding: 2%;
 	}
+	.head-sdr{   
+	padding-top: 15px;
+    padding-bottom: 15px;
+    line-height: 28px;
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    color: #ffff;
+	}
 	@media screen and (max-width: 600px) {
 	  .structural-head div ul:nth-of-type(2){
 	  	display: none;
@@ -151,12 +161,12 @@
 		<nav class="structural-head">
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">
-					<li class="active klm-img"><a href="#"></a></li>
-					<li><a href="#">Structural Defect Reporting</a></li>
+					<li class="active klm-img"></li>
+					<li><div class="head-sdr">Structural Defect Reporting</div></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#">FAQ</a></li>
-					<li><a href="#"> English</a></li>
+					<li><div class="head-sdr">FAQ</div></li>
+					<li><div class="head-sdr"> English</div></li>
 				</ul>
 			</div>
 		</nav>
@@ -218,7 +228,7 @@
 					<!--Grid row-->
 					<div class="row mt-lg-5">
 						<!--Grid column-->
-						<div class="col-md-6 pt-3 mb-5 mt-md-0 mt-5 white-text text-center text-md-left wow fadeInLeft" data-wow-delay="0.3s">
+						<div class="col-md-9 pt-3 mb-5 mt-md-0 mt-5 white-text text-center text-md-left wow fadeInLeft" data-wow-delay="0.3s">
 							<h6 class="mb-3 iframe-height">
 								<iframe src="" id="api-frame" height="500" width="500"></iframe>
 							</h6>
@@ -226,7 +236,7 @@
 						</div>
 						<!--Grid column-->
 						<!--Grid column-->
-						<div class="col-md-4 col-xl-5 mb-4">
+						<div class="col-md-3 col-xl-5 mb-4">
 							<!--Form-->
 							<div class="card wow fadeInRight" data-wow-delay="0.3s">
 								<div class="card-body z-depth-2">

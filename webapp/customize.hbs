@@ -271,7 +271,7 @@
 										<hr>
 									</div>
 									<!--Body-->
-									<div class="md-form" style="display: none">
+									<!-- <div class="md-form" style="display: none">
 										<div class="col">
 											Positionx: <input id="positionX" value="0">
 										</div>
@@ -310,7 +310,7 @@
 										<div class="col">
 											Targetz: <input id="targetZ" value="0">
 										</div>
-									</div>
+									</div> -->
 									<div class="md-form">
 										<i class="fa fa-user prefix grey-text"></i>
 										<label for="annoName">Damage Area</label>
@@ -343,7 +343,7 @@
 									<!--Textarea with icon prefix-->
 
 									<div class="text-center mt-10 mt-3">
-										<button class="btn-klm" id="createAnno" disabled=true>Save</button>
+										<button class="btn-klm" id="saveAnno" disabled=true>Save</button>
 
 										<hr>
 										<small id="annoRes" class="form-text text-muted" style="display: none; color: green">Saved Successfully</small>
@@ -398,6 +398,7 @@
 			var cameraTarget;
 			var currentDefectToUpdate;
 			var currentAnnotationToUpdate;
+			var sketchFabAPI;
 
 			var iframe = document.getElementById('api-frame');
 			var urlid = 'dbf6450b82a4461c9393dda70fb66a43';
@@ -407,11 +408,21 @@
 
 			// Alternatively, you can request a specific version.
 			// var client = new Sketchfab( '1.3.0', iframe );
+			function clearForm() {
+				$('#annoName').val('');
+				$('#annoDescr').val('');
+				$('#hangerLocation').val('');
+				$('#dateText').val('');
+				$('#userName').val('');
+				sketchFabAPI.unselectAnnotation();
+			}
 
 			function onSuccess(api) {
+				sketchFabAPI=api;
 				api.setCameraEasing('easeOutSextic');
 				document.getElementById('markAnno').addEventListener('click', function () {
 					markDefectMode = true;
+					clearForm();
 				});
 				api.addEventListener('annotationSelect', function (index) {
 					if (index != -1) {
@@ -433,18 +444,10 @@
 						normalX = info.normal[0];
 						normalY = info.normal[1];
 						normalZ = info.normal[2];
-
-						// $('#positionX').val(info.position3D[0]);
-						// $('#positionY').val(info.position3D[1]);
-						// $('#positionZ').val(info.position3D[2]);
-						// $('#normalX').val(info.normal[0]);
-						// $('#normalY').val(info.normal[1]);
-						// $('#normalZ').val(info.normal[2]);
-
 						api.getCameraLookAt(function (err, camera) {
 							cameraPosition = camera.position;
 							cameraTarget = camera.target;
-							document.getElementById('createAnno').disabled = false;
+							document.getElementById('saveAnno').disabled = false;
 							document.getElementById('annoRes').style.display = "hidden";
 							currentAnnotationToCreate = {
 								pox: positionX,
@@ -457,9 +460,9 @@
 								camTarget: cameraTarget,
 								title: 'Title',
 								content: 'Description',
-								user:'User',
-								date:'10/18/2018',
-								hangerLocation:'HangerLocation'
+								user: 'User',
+								date: '10/18/2018',
+								hangerLocation: 'HangerLocation'
 							};
 							api.createAnnotation(
 								[currentAnnotationToCreate.pox, currentAnnotationToCreate.poy, currentAnnotationToCreate.poz],
@@ -469,13 +472,9 @@
 								currentAnnotationToCreate.title,
 								currentAnnotationToCreate.content,
 								function (index) {
-									debugger;
 									api.updateAnnotation(index, {
 										title: currentAnnotationToCreate.title,
-										content: currentAnnotationToCreate.content,
-										title: currentAnnotationToCreate.user,
-										content: currentAnnotationToCreate.date,
-										title: currentAnnotationToCreate.hangerLocation
+										content: currentAnnotationToCreate.content
 									})
 								}
 							);
@@ -488,74 +487,33 @@
 
 
 				function setFormDetails(info) {
-					$('#annoName').val(info.title);
-					$('#annoDescr').val(info.content);
-					$('#hangerLocation').val(info.hangerLocation);
-					$('#dateText').val(info.date);
-					$('#userName').val(info.user);
+					if (info) {
+						$('#annoName').val(info.title);
+						$('#annoDescr').val(info.content);
+						$('#hangerLocation').val(info.hangerLocation);
+						$('#dateText').val(info.date);
+						$('#userName').val(info.user);
+					}
 				}
 				api.start(function () {
-
 					$('#loadAnno').click(function () {
 						init();
 					});
 					console.log('started');
-
-					document.getElementById('createAnno').addEventListener('click', function () {
+					document.getElementById('saveAnno').addEventListener('click', function () {
 						currentDefectToUpdate.title = $('#annoName').val();
 						currentDefectToUpdate.content = $('#annoDescr').val();
-						currentAnnotationToUpdate.hangerLocation=$('#hangerLocation').val();
-						currentAnnotationToUpdate.dateText=$('#dateText').val();
-						currentAnnotationToUpdate.userName=$('#userName').val();
+						currentDefectToUpdate.hangerLocation = $('#hangerLocation').val();
+						currentDefectToUpdate.date = $('#dateText').val();
+						currentDefectToUpdate.user = $('#userName').val();
 						api.updateAnnotation(currentAnnotationToUpdate.order, {
 							title: currentDefectToUpdate.title,
-							content: currentDefectToUpdate.content,
-							hangerLocation: currentAnnotationToUpdate.hangerLocation,
-							dateText: currentAnnotationToUpdate.dateText,
-							userName: currentAnnotationToUpdate.userName
+							content: currentDefectToUpdate.content
 						});
-						// var annoposObj = {
-						// 	pox: $('#positionX').val(),
-						// 	poy: $('#positionY').val(),
-						// 	poz: $('#positionZ').val(),
-						// 	nox: $('#normalX').val(),
-						// 	noy: $('#normalX').val(),
-						// 	noz: $('#normalX').val(),
-						// 	camPos: [$('#cameraX').val(), $('#cameraY').val(), $('#cameraZ').val()],
-						// 	camTarget: [$('#targetX').val(), $('#targetY').val(), $('#targetZ').val()],
-						// 	title: $('#annoName').val(),
-						// 	content: $('#annoDescr').val(),
-						// };
-
-
-						// $.ajax({
-						// 	type: 'POST',
-						// 	url: '/saveAnnotation',
-						// 	data: currentAnnotationToCreate,
-						// 	success: function (obj) {
-						// 		document.getElementById('createAnno').disabled = true;
-						// 		document.getElementById('annoRes').style.display = "block";
-						// 		// api.createAnnotation(
-						// 		// 	[obj.pox, obj.poy, obj.poz],
-						// 		// 	[obj.nox, obj.noy, obj.noz],
-						// 		// 	obj.camPos,
-						// 		// 	obj.camTarget,
-						// 		// 	obj.title,
-						// 		// 	obj.content,
-						// 		// 	function (index) {
-						// 		// 		console.log('added hotspot: ' + index);
-						// 		// 		api.removeAnnotation(index);
-
-						// 		// 	}
-						// 		// );
-						// 		// 
-						// 	}
-						// });
 					});
 
 					api.addEventListener('viewerready', function () {
 						annolist.forEach(function (obj) {
-
 							console.log('inside create', obj)
 							api.createAnnotation(
 								[obj.pox, obj.poy, obj.poz],

@@ -162,11 +162,17 @@
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">
 					<li class="active klm-img"></li>
-					<li><div class="head-sdr">Structural Defect Reporting</div></li>
+					<li>
+						<div class="head-sdr">Structural Defect Reporting</div>
+					</li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><div class="head-sdr">FAQ</div></li>
-					<li><div class="head-sdr"> English</div></li>
+					<li>
+						<div class="head-sdr">FAQ</div>
+					</li>
+					<li>
+						<div class="head-sdr"> English</div>
+					</li>
 				</ul>
 			</div>
 		</nav>
@@ -218,6 +224,7 @@
 				<option>ZH-BCA</option>
 			</select>
 		</div>
+		<button class="btn btn-indigo" id="loadModel">Load</button>
 		<!-- Navbar -->
 		<!-- Full Page Intro -->
 		{{!-- <div class="view" style="background-image: url('https://mdbootstrap.com/img/Photos/Others/images/31.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
@@ -315,6 +322,7 @@
 		<!-- Initialize the viewer -->
 		<script type="text/javascript">
 			var annolist = [];
+			var modelsList = [];
 			var addDefectMode = false;
 			currentAnnotationToCreate = {};
 			markDefectMode = false;
@@ -330,6 +338,9 @@
 			normalX = 0;
 			normalY = 0;
 			normalZ = 0;
+			var currentAircraftmodelSelected;
+			var currentAirlineSelected;
+			var currentRegistrationCodeSelected;
 			var cameraPosition;
 			var cameraTarget;
 			var currentDefectToUpdate;
@@ -348,13 +359,15 @@
 					markDefectMode = true;
 					clearForm();
 				});
+				document.getElementById('loadModel').addEventListener('click', function () {
+					onLoadmodel();
+				});
 				api.addEventListener('annotationSelect', function (index) {
 					if (index != -1) {
 						api.getAnnotation(index, function (err, info) {
 							if (info) {
 								currentAnnotationToUpdate = info;
 								currentDefectToUpdate = annolist[info.order - 1];
-								//api.lookat(currentDefectToUpdate.position, currentDefectToUpdate.target);
 								setFormDetails(currentDefectToUpdate);
 							}
 						});
@@ -370,8 +383,7 @@
 						normalY = info.normal[1];
 						normalZ = info.normal[2];
 						api.getCameraLookAt(function (err, camera) {
-							currentCamera =
-								cameraPosition = camera.position;
+							cameraPosition = camera.position;
 							cameraTarget = camera.target;
 							document.getElementById('saveAnno').disabled = false;
 							document.getElementById('annoRes').style.display = "hidden";
@@ -390,6 +402,7 @@
 								date: '10/18/2018',
 								hangerLocation: 'HangerLocation'
 							};
+							var modelDetails;
 							api.createAnnotation(
 								[currentAnnotationToCreate.pox, currentAnnotationToCreate.poy, currentAnnotationToCreate.poz],
 								[currentAnnotationToCreate.nox, currentAnnotationToCreate.noy, currentAnnotationToCreate.noz],
@@ -401,16 +414,36 @@
 									api.updateAnnotation(index, {
 										title: currentAnnotationToCreate.title,
 										content: currentAnnotationToCreate.content
-									})
+									});
+									var copiedObject = jQuery.extend(true, {}, currentAnnotationToCreate)
+									checkForModel(copiedObject);
 								}
 							);
-							annolist.push(currentAnnotationToCreate);
+							//modelsList.push(modelDetails);
 							setFormDetails(currentAnnotationToCreate);
 						});
 					}
 				}, {
 					pick: 'fast'
 				});
+
+				function checkForModel(annotationToAdd) {
+					var currentModel = modelsList.filter(obj => {
+						return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected && obj.registrationCode ===
+							currentRegistrationCodeSelected)
+					});
+					if (currentModel.length === 0) {
+						modelDetails = {
+							aircraftmodel: $('#aircraftmodel').val(),
+							airline: $('#airline').val(),
+							registrationCode: $('#registration').val(),
+							defectsDetails: annotationArray
+						};
+						modelsList.push(modelDetails);
+					} else {
+						currentModel[0].defectsDetails.push(annotationToAdd);
+					}
+				}
 
 				function clearForm() {
 					$('#annoName').val('');
@@ -432,6 +465,7 @@
 					}
 				}
 				api.start(function () {
+					debugger;
 					$('#loadAnno').click(function () {
 						init();
 					});
@@ -449,7 +483,12 @@
 					});
 
 					api.addEventListener('viewerready', function () {
-						annolist.forEach(function (obj) {
+						var currentModel = modelsList.filter(obj => {
+							return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected &&
+								obj.registrationCode === currentRegistrationCodeSelected)
+						});
+						debugger;
+						currentModel[0].defectsDetails.forEach(function (obj) {
 							console.log('inside create', obj)
 							api.createAnnotation(
 								[obj.pox, obj.poy, obj.poz],
@@ -459,12 +498,26 @@
 								obj.title,
 								obj.content,
 								function (index) {
-									console.log('added hotspot: ' + index);
-									api.removeAnnotation(index);
+									// console.log('added hotspot: ' + index);
+									// api.removeAnnotation(index);
 								}
 							);
 						});
 					});
+				});
+			}
+
+			function onLoadmodel() {
+				document.getElementById('api-frame').src += '';
+				client = new Sketchfab(document.getElementById('api-frame'));
+				//document.getElementById('api-frame').contentWindow.location.reload();
+				client.init(urlid, {
+					success: onSuccess,
+					error: onError,
+					annotation: 0,
+					annotations_visible: 1,
+					ui_controls: 0
+
 				});
 			}
 
@@ -473,27 +526,47 @@
 			}
 
 			function init() {
-				var jqxhr = jQuery.get("/getAnnotations", function (data) {
-						console.log('success');
-					})
-					.done(function (dataDone) {
-						console.log('dataDone ', dataDone);
-						annolist = dataDone;
-						client.init(urlid, {
-							success: onSuccess,
-							error: onError,
-							annotation: 0,
-							annotations_visible: 1,
-							ui_controls: 0
+				currentAircraftmodelSelected = $('#aircraftmodel').val();
+				currentAirlineSelected = $('#airline').val();
+				currentRegistrationCodeSelected = $('#registration').val();
+				if (modelsList.length === 0) {
+					modelDetails = {
+						aircraftmodel: currentAircraftmodelSelected,
+						airline: currentAirlineSelected,
+						registrationCode: currentRegistrationCodeSelected,
+						defectsDetails: []
+					};
+					modelsList.push(modelDetails);
+					client.init(urlid, {
+						success: onSuccess,
+						error: onError,
+						annotation: 0,
+						annotations_visible: 1,
+						ui_controls: 0
 
-						});
-					})
-					.fail(function () {
-						console.log("error");
-					})
-					.always(function () {
-						console.log("finished");
 					});
+				}
+				// var jqxhr = jQuery.get("/getAnnotations", function (data) {
+				// 		console.log('success');
+				// 	})
+				// 	.done(function (dataDone) {
+				// 		console.log('dataDone ', dataDone);
+				// 		annolist = dataDone;
+				// 		client.init(urlid, {
+				// 			success: onSuccess,
+				// 			error: onError,
+				// 			annotation: 0,
+				// 			annotations_visible: 1,
+				// 			ui_controls: 0
+
+				// 		});
+				// 	})
+				// 	.fail(function () {
+				// 		console.log("error");
+				// 	})
+				// 	.always(function () {
+				// 		console.log("finished");
+				// 	});
 			}
 			init();
 		</script>

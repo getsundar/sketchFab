@@ -350,24 +350,27 @@
 			var urlid = 'dbf6450b82a4461c9393dda70fb66a43';
 			// By default, the latest version of the viewer API will be used.
 			var client = new Sketchfab(iframe);
-			// Alternatively, you can request a specific version.
-			// var client = new Sketchfab( '1.3.0', iframe );
+
+			// Controls
+			document.getElementById('markAnno').addEventListener('click', function () {
+				markDefectMode = true;
+				clearForm();
+			});
+			document.getElementById('loadModel').addEventListener('click', function () {
+				onLoadmodel();
+			});
+			$('#loadAnno').click(function () {
+				init();
+			});
+			// API
 			function onSuccess(api) {
 				sketchFabAPI = api;
-				api.setCameraEasing('easeOutSextic');
-				document.getElementById('markAnno').addEventListener('click', function () {
-					markDefectMode = true;
-					clearForm();
-				});
-				document.getElementById('loadModel').addEventListener('click', function () {
-					onLoadmodel();
-				});
 				api.addEventListener('annotationSelect', function (index) {
 					if (index != -1) {
 						api.getAnnotation(index, function (err, info) {
 							if (info) {
 								currentAnnotationToUpdate = info;
-								currentDefectToUpdate = annolist[info.order - 1];
+								currentDefectToUpdate = getAnnotationDetails((info.order - 1));
 								setFormDetails(currentDefectToUpdate);
 							}
 						});
@@ -415,61 +418,19 @@
 										title: currentAnnotationToCreate.title,
 										content: currentAnnotationToCreate.content
 									});
+									currentAnnotationToUpdate = currentAnnotationToCreate;
 									var copiedObject = jQuery.extend(true, {}, currentAnnotationToCreate)
 									checkForModel(copiedObject);
 								}
 							);
 							//modelsList.push(modelDetails);
-							setFormDetails(currentAnnotationToCreate);
+							//setFormDetails(currentAnnotationToCreate);
 						});
 					}
 				}, {
 					pick: 'fast'
 				});
-
-				function checkForModel(annotationToAdd) {
-					var currentModel = modelsList.filter(obj => {
-						return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected && obj.registrationCode ===
-							currentRegistrationCodeSelected)
-					});
-					debugger;
-					if (currentModel.length === 0) {
-						modelDetails = {
-							aircraftmodel: currentAircraftmodelSelected,
-							airline: currentAirlineSelected,
-							registrationCode: currentRegistrationCodeSelected,
-							defectsDetails: [annotationToAdd]
-						};
-						modelsList.push(modelDetails);
-					} else {
-						currentModel[0].defectsDetails.push(annotationToAdd);
-					}
-				}
-
-				function clearForm() {
-					$('#annoName').val('');
-					$('#annoDescr').val('');
-					$('#hangerLocation').val('');
-					$('#dateText').val('');
-					$('#userName').val('');
-					sketchFabAPI.unselectAnnotation();
-					document.getElementById('saveAnno').disabled = true;
-				}
-
-				function setFormDetails(info) {
-					if (info) {
-						$('#annoName').val(info.title);
-						$('#annoDescr').val(info.content);
-						$('#hangerLocation').val(info.hangerLocation);
-						$('#dateText').val(info.date);
-						$('#userName').val(info.user);
-					}
-				}
 				api.start(function () {
-					debugger;
-					$('#loadAnno').click(function () {
-						init();
-					});
 					console.log('started');
 					document.getElementById('saveAnno').addEventListener('click', function () {
 						currentDefectToUpdate.title = $('#annoName').val();
@@ -508,9 +469,58 @@
 						}
 					});
 				});
+			};
+			// Methods
+			function getAnnotationDetails(index) {
+				var currentModel = modelsList.filter(obj => {
+					return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected && obj.registrationCode ===
+						currentRegistrationCodeSelected)
+				});
+				return currentModel[0].defectsDetails[index];
 			}
 
+			function checkForModel(annotationToAdd) {
+				var currentModel = modelsList.filter(obj => {
+					return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected && obj.registrationCode ===
+						currentRegistrationCodeSelected)
+				});
+				if (currentModel.length === 0) {
+					modelDetails = {
+						aircraftmodel: currentAircraftmodelSelected,
+						airline: currentAirlineSelected,
+						registrationCode: currentRegistrationCodeSelected,
+						defectsDetails: [annotationToAdd]
+					};
+					currentDefectToUpdate = modelDetails;
+					modelsList.push(modelDetails);
+				} else {
+					currentDefectToUpdate = currentModel[0];
+					currentModel[0].defectsDetails.push(annotationToAdd);
+				}
+			};
+
+			function clearForm() {
+				$('#annoName').val('');
+				$('#annoDescr').val('');
+				$('#hangerLocation').val('');
+				$('#dateText').val('');
+				$('#userName').val('');
+				sketchFabAPI.unselectAnnotation();
+				document.getElementById('saveAnno').disabled = true;
+			};
+
+			function setFormDetails(info) {
+				if (info) {
+					$('#annoName').val(info.title);
+					$('#annoDescr').val(info.content);
+					$('#hangerLocation').val(info.hangerLocation);
+					$('#dateText').val(info.date);
+					$('#userName').val(info.user);
+				}
+			};
+
 			function onLoadmodel() {
+				clearForm();
 				getModelsDetails();
 				document.getElementById('api-frame').src += '';
 				client = new Sketchfab(document.getElementById('api-frame'));
@@ -523,20 +533,19 @@
 					ui_controls: 0
 
 				});
-			}
+			};
 
 			function onError(error) {
 				console.log(error);
-			}
+			};
 
 			function getModelsDetails() {
 				currentAircraftmodelSelected = $('#aircraftmodel').val();
 				currentAirlineSelected = $('#airline').val();
 				currentRegistrationCodeSelected = $('#registration').val();
-			}
+			};
 
 			function init() {
-				debugger;
 				if (modelsList.length === 0) {
 					modelDetails = {
 						aircraftmodel: currentAircraftmodelSelected,
@@ -554,28 +563,7 @@
 
 					});
 				}
-				// var jqxhr = jQuery.get("/getAnnotations", function (data) {
-				// 		console.log('success');
-				// 	})
-				// 	.done(function (dataDone) {
-				// 		console.log('dataDone ', dataDone);
-				// 		annolist = dataDone;
-				// 		client.init(urlid, {
-				// 			success: onSuccess,
-				// 			error: onError,
-				// 			annotation: 0,
-				// 			annotations_visible: 1,
-				// 			ui_controls: 0
-
-				// 		});
-				// 	})
-				// 	.fail(function () {
-				// 		console.log("error");
-				// 	})
-				// 	.always(function () {
-				// 		console.log("finished");
-				// 	});
-			}
+			};
 			init();
 		</script>
 

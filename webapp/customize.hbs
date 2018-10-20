@@ -432,12 +432,13 @@
 						return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected && obj.registrationCode ===
 							currentRegistrationCodeSelected)
 					});
+					debugger;
 					if (currentModel.length === 0) {
 						modelDetails = {
-							aircraftmodel: $('#aircraftmodel').val(),
-							airline: $('#airline').val(),
-							registrationCode: $('#registration').val(),
-							defectsDetails: annotationArray
+							aircraftmodel: currentAircraftmodelSelected,
+							airline: currentAirlineSelected,
+							registrationCode: currentRegistrationCodeSelected,
+							defectsDetails: [annotationToAdd]
 						};
 						modelsList.push(modelDetails);
 					} else {
@@ -483,31 +484,34 @@
 					});
 
 					api.addEventListener('viewerready', function () {
+						getModelsDetails();
 						var currentModel = modelsList.filter(obj => {
 							return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected &&
 								obj.registrationCode === currentRegistrationCodeSelected)
 						});
-						debugger;
-						currentModel[0].defectsDetails.forEach(function (obj) {
-							console.log('inside create', obj)
-							api.createAnnotation(
-								[obj.pox, obj.poy, obj.poz],
-								[obj.nox, obj.noy, obj.noz],
-								obj.camPos,
-								obj.camTarget,
-								obj.title,
-								obj.content,
-								function (index) {
-									// console.log('added hotspot: ' + index);
-									// api.removeAnnotation(index);
-								}
-							);
-						});
+						if (currentModel.length != 0) {
+							currentModel[0].defectsDetails.forEach(function (obj) {
+								console.log('inside create', obj)
+								api.createAnnotation(
+									[obj.pox, obj.poy, obj.poz],
+									[obj.nox, obj.noy, obj.noz],
+									obj.camPos,
+									obj.camTarget,
+									obj.title,
+									obj.content,
+									function (index) {
+										// console.log('added hotspot: ' + index);
+										// api.removeAnnotation(index);
+									}
+								);
+							});
+						}
 					});
 				});
 			}
 
 			function onLoadmodel() {
+				getModelsDetails();
 				document.getElementById('api-frame').src += '';
 				client = new Sketchfab(document.getElementById('api-frame'));
 				//document.getElementById('api-frame').contentWindow.location.reload();
@@ -525,10 +529,14 @@
 				console.log(error);
 			}
 
-			function init() {
+			function getModelsDetails() {
 				currentAircraftmodelSelected = $('#aircraftmodel').val();
 				currentAirlineSelected = $('#airline').val();
 				currentRegistrationCodeSelected = $('#registration').val();
+			}
+
+			function init() {
+				debugger;
 				if (modelsList.length === 0) {
 					modelDetails = {
 						aircraftmodel: currentAircraftmodelSelected,

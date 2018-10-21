@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Sketchfab Viewer API example</title>
+	<title>Structural Defect Reporting</title>
 	<!-- Insert this script -->
 	<script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.3.1.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script>
@@ -13,7 +13,14 @@
 	<style>
 		body{
     background: black;
+    font-family:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;
     }
+	a:hover {
+		text-decoration:none;
+	}
+	a:focus{
+		text-decoration:none;
+	}
     .structural-head{
     background: #0da6e0;
     }
@@ -31,7 +38,7 @@
     color:#00a1de;
     }
     .brand{
-    background-image: url("./images/airfrance-klm.jpg");
+    /*background-image: url("./images/airfrance-klm.jpg");*/
     height: 42px;
     width: 100px;
     background-size: 89%;
@@ -106,8 +113,19 @@
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12);
     border: solid 1px #e77b2f;;
 	}
+	#loadModel{
+	color: #ffff;
+    background-color: #e77b2f;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    border: solid 1px #e77b2f;
+    border-radius: 4px;
+    padding: 2%;
+	}
 	.mt-10{
 	margin-top:10px;
+	}
+	.mt-25{
+	margin-top: 25px;
 	}
 	.mt-0{
 	margin-top:0px;
@@ -133,6 +151,63 @@
     padding: 10px 15px;
     color: #ffff;
 	}
+	.black,.panel-heading.black{
+	background-color: black;
+	color: #fff;
+	border-color: #928181;
+	}
+	.gly-sdr{
+	height: 50px;
+    width: 50px;
+    border: 3px solid #e77b2f;
+    border-radius: 50%;
+    margin-top: 10px;
+	}
+	.gly-sdr span {
+	top: 17%;
+    left: 19%;
+    color: white;
+    font-size: 28px;
+	}
+	.border-all{
+	border: 1px solid #ffff;
+	}
+	#accordion .form-control{
+	height:25px;
+	}
+	.klmbackground-img .container{
+	width: 95%;
+	}
+	.txt-upload{
+    right: 56%;
+    padding: 4px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 90%;
+	}
+	.custom-file-upload{
+    left: 9%;
+    bottom: 31px;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+    width: 47%;
+    color: #ffff;
+    background-color: #e77b2f;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    border: solid 1px #e77b2f;
+	}
+	input[type=file] {
+    display: none;
+	}
+	#accordion .form-control.damage-des, textarea{
+	height:auto;
+	}
 	@media screen and (max-width: 600px) {
 	  .structural-head div ul:nth-of-type(2){
 	  	display: none;
@@ -149,6 +224,11 @@
 	  nav.navbar.panel{
 	  	display:none;
 	  }
+	  .uploads
+	  {
+	   	margin-left: 45%;
+   	   	margin-top: 16%;
+  	  }
 	}
 	</style>
 </head>
@@ -224,305 +304,450 @@
 				<option>ZH-BCA</option>
 			</select>
 		</div>
-		<button class="btn btn-indigo" id="loadModel">Load</button>
+		<div class="form-group col-md-3">
+			<button class="btn btn-primary btn-lg btn-block mt-25" id="loadModel">Load</button>
+		</div>
 		<!-- Navbar -->
 		<!-- Full Page Intro -->
 		{{!-- <div class="view" style="background-image: url('https://mdbootstrap.com/img/Photos/Others/images/31.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
 			<!-- Mask & flexbox options--> --}}
-			<div class=" klmbackground-img mask rgba-indigo-strong d-flex justify-content-center align-items-center">
+			<div class=" klmbackground-img">
 				<!-- Content -->
 				<div class="container">
 					<!--Grid row-->
 					<div class="row mt-lg-5">
 						<!--Grid column-->
-						<div class="col-md-9 pt-3 mb-5 mt-md-0 mt-5 white-text text-center text-md-left wow fadeInLeft" data-wow-delay="0.3s">
+						<div class="col-md-9" data-wow-delay="0.3s">
 							<h6 class="mb-3 iframe-height">
 								<iframe src="" id="api-frame" height="500" width="500"></iframe>
 							</h6>
-							<button class="btn btn-indigo" id="markAnno">Mark</button>
+							<button class="btn" id="markAnno">Mark</button>
 						</div>
 						<!--Grid column-->
 						<!--Grid column-->
 						<div class="col-md-3 col-xl-5 mb-4">
 							<!--Form-->
-							<div class="card wow fadeInRight" data-wow-delay="0.3s">
-								<div class="card-body z-depth-2">
-									<!--Header-->
-									<div class="text-center">
-										<h3 class="dark-grey-text">
-											<strong>Defect Reporting</strong>
-										</h3>
-										<hr>
+							<div style="height:450px;overflow-y:auto;padding: 10px">
+								<div class="panel-group mt-10" id="accordion">
+									<div class="panel panel-default black">
+										<div class="panel-heading black">
+											<h4 class="panel-title">
+												<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Defect Details</a>
+											</h4>
+										</div>
+										<div id="collapseOne" class="panel-collapse collapse">
+											<div class="panel-body">
+												<div class="card wow fadeInRight" data-wow-delay="0.3s">
+													<div class="card-body z-depth-2">
+														<!--Header-->
+														<div class="md-form">
+															<label>Defect Id</label>
+															<input id="defectIdText" type="text" class="form-control">
+														</div>
+														<div class="md-form">
+															<label>Date</label>
+															<input id="dateText" type="text" class="form-control">
+														</div>
+														<div class="md-form">
+															<label>Structural Classification</label>
+															<input id="classificationText" type="text" class="form-control">
+														</div>
+														<div class="md-form">
+															<label>Damaged Component</label>
+															<input id="damagedComponentText" type="text" class="form-control">
+														</div>
+														<div class="md-form">
+															<label>Mobile Element</label>
+															<input id="mobileElementText" type="text" class="form-control">
+														</div>
+														<div class="md-form">
+															<label>Damage Description</label>
+															<textarea id="damagedDescriptionText" class="form-control damage-des" rows="3"></textarea>
+														</div>
+														<div class="md-form">
+															<label>Location Side</label>
+															<input id="locationSideText" type="text" class="form-control">
+														</div>
+														<div class="md-form">
+															<label>Damage Type</label>
+															<input id="damageTypeText" type="text" class="form-control">
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
 									</div>
-									<div class="md-form">
-										<i class="fa fa-user prefix grey-text"></i>
-										<label for="annoName">Damage Area</label>
-										<input type="text" id="annoName" class="form-control">
+									<div class="panel panel-default black">
+										<div class="panel-heading black">
+											<h4 class="panel-title">
+												<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Evidence</a>
+											</h4>
+										</div>
+										<div id="collapseTwo" class="panel-collapse collapse">
+											<div class="panel-body">
+												<div class="md-form">
+													<label>References</label>
+													<input id="referenceText" type="text" class="form-control">
+												</div>
+												<div class="md-form">
+													<label>Reported by</label>
+													<input id="reportedByText" type="text" class="form-control">
+												</div>
+												<div class="gly-sdr pull-left">
+													<span class="glyphicon glyphicon-facetime-video"></span>
+												</div>
+												<div class="gly-sdr pull-right">
+													<span class="glyphicon glyphicon-camera"></span>
+												</div>
+												<div class="col-sm-10 mt-10 uploads">
+													<input type="text" class="txt-upload col-sm-3 col-sm-offset-6">
+													<input id="file-upload" accept="" type="file" style="visibility: hidden;" multiple="false">
+													<label for="file-upload" class="custom-file-upload col-sm-2 col-sm-offset-9">Upload</label>
+												</div>
+											</div>
+										</div>
 									</div>
-									<div class="md-form">
-										<i class="fa fa-envelope prefix grey-text"></i>
-										<label for="annoDescr">Description</label>
-										<input type="text" id="annoDescr" class="form-control">
-									</div>
-
-									<label class="lead mt-10 mb-0">Contacts</label>
-									<hr class="mt-0">
-									<div>
-										<i class="fa fa-envelope prefix grey-text"></i>
-										<label>User</label>
-										<input type="text" id="userName" class="form-control">
-									</div>
-									<div>
-										<i class="fa fa-envelope prefix grey-text"></i>
-										<label>Date</label>
-										<input type="text" id="dateText" class="form-control">
-									</div>
-									<div>
-										<i class="fa fa-envelope prefix grey-text"></i>
-										<label>Hanger Location</label>
-										<input type="text" id="hangerLocation" class="form-control">
-									</div>
-
-									<!--Textarea with icon prefix-->
-
-									<div class="text-center mt-10 mt-3">
-										<button class="btn-klm" id="saveAnno" disabled=true>Save</button>
-
-										<hr>
-										<small id="annoRes" class="form-text text-muted" style="display: none; color: green">Saved Successfully</small>
+									<div class="panel panel-default black">
+										<div class="panel-heading black">
+											<h4 class="panel-title">
+												<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Repair Detail</a>
+											</h4>
+										</div>
+										<div id="collapseThree" class="panel-collapse collapse">
+											<div class="panel-body">
+												<div class="md-form">
+													<label>Status</label>
+													<input id="statusText" type="text" class="form-control">
+												</div>
+												<div class="md-form">
+													<label>Owner</label>
+													<input id="ownerText" type="text" class="form-control">
+												</div>
+												<div class="md-form">
+													<label>References</label>
+													<input id="referencesText" type="text" class="form-control">
+												</div>
+												<div class="md-form">
+													<label>Repair Type</label>
+													<input id="repairTypeText" type="text" class="form-control">
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
-							<!--/.Form-->
+							
+							<div class="text-center mt-10 mt-3">
+								<button style="margin-bottom: 10px;" class="btn-klm" id="saveAnno" disabled=true>Save</button>
+								<small id="annoRes" class="form-text text-muted" style="display: none; color: green">Saved Successfully</small>
+							</div>
 						</div>
-						<!--Grid column-->
+
 					</div>
-					<!--Grid row-->
+					<!--/.Form-->
 				</div>
-				<!-- Content -->
+
+
+				<!--Grid column-->
 			</div>
-			<!-- Mask & flexbox options-->
+			<!--Grid row-->
 		</div>
-		<!-- Full Page Intro -->
+		<!-- Content -->
+	</div>
+	<!-- Mask & flexbox options-->
+	</div>
+	<!-- Full Page Intro -->
 
-		<footer>
-			<div class="g-legal-footer">
-				<div class="g-grid--row">
-					<a href="https://www.klm.com/travel/nl_nl/meta/sitemap/sitemap.htm" target="_self">Site map</a>
+	<footer>
+		<div class="g-legal-footer">
+			<div class="g-grid--row">
+				<a href="https://www.klm.com/travel/nl_nl/meta/sitemap/sitemap.htm" target="_self">Site map</a>
 
-					<a href="https://www.klm.com/travel/nl_nl/customer_support/customer_support/legal_information/index.htm" target="_self">Juridische
-						informatie</a>
+				<a href="https://www.klm.com/travel/nl_nl/customer_support/customer_support/legal_information/index.htm" target="_self">Juridische
+					informatie</a>
 
-					<a href="https://www.klm.com/travel/nl_nl/customer_support/copyright_klm/index.htm" target="_self">© 2018 KLM</a>
-				</div>
+				<a href="https://www.klm.com/travel/nl_nl/customer_support/copyright_klm/index.htm" target="_self">© 2018 KLM</a>
 			</div>
-		</footer>
-		<!-- Main navigation -->
+		</div>
+	</footer>
+	<!-- Main navigation -->
 
-		<!-- Initialize the viewer -->
-		<script type="text/javascript">
-			var annolist = [];
-			var modelsList = [];
-			var addDefectMode = false;
-			currentAnnotationToCreate = {};
-			markDefectMode = false;
-			cameraX = 0;
-			cameraY = 0;
-			cameraZ = 0;
-			targetX = 0;
-			targetY = 0;
-			targetZ = 0;
-			positionX = 0;
-			positionY = 0;
-			positionZ = 0;
-			normalX = 0;
-			normalY = 0;
-			normalZ = 0;
-			var currentAircraftmodelSelected;
-			var currentAirlineSelected;
-			var currentRegistrationCodeSelected;
-			var cameraPosition;
-			var cameraTarget;
-			var currentDefectToUpdate;
-			var currentAnnotationToUpdate;
-			var sketchFabAPI;
-			var iframe = document.getElementById('api-frame');
-			var urlid = 'dbf6450b82a4461c9393dda70fb66a43';
-			// By default, the latest version of the viewer API will be used.
-			var client = new Sketchfab(iframe);
+	<!-- Initialize the viewer -->
+	<script type="text/javascript">
+		var annolist = [];
+		var modelsList = [];
+		var addDefectMode = false;
+		currentAnnotationToCreate = {};
+		markDefectMode = false;
+		cameraX = 0;
+		cameraY = 0;
+		cameraZ = 0;
+		targetX = 0;
+		targetY = 0;
+		targetZ = 0;
+		positionX = 0;
+		positionY = 0;
+		positionZ = 0;
+		normalX = 0;
+		normalY = 0;
+		normalZ = 0;
+		currentDefectId = 0;
+		var currentAircraftmodelSelected;
+		var currentAirlineSelected;
+		var currentRegistrationCodeSelected;
+		var cameraPosition;
+		var cameraTarget;
+		var currentDefectToUpdate;
+		var currentAnnotationToUpdate;
+		var sketchFabAPI;
+		var iframe = document.getElementById('api-frame');
+		var urlid = 'dbf6450b82a4461c9393dda70fb66a43';
+		// By default, the latest version of the viewer API will be used.
+		var client = new Sketchfab(iframe);
 
-			// Controls
-			document.getElementById('markAnno').addEventListener('click', function () {
-				markDefectMode = true;
-				clearForm();
+		// Controls
+		document.getElementById('markAnno').addEventListener('click', function () {
+			markDefectMode = true;
+			clearForm();
+		});
+		document.getElementById('loadModel').addEventListener('click', function () {
+			onLoadmodel();
+		});
+		$('#loadAnno').click(function () {
+			init();
+		});
+		// API
+		function onSuccess(api) {
+			sketchFabAPI = api;
+			api.addEventListener('annotationSelect', function (index) {
+				if (index != -1) {
+					api.getAnnotation(index, function (err, info) {
+						if (info) {
+							currentAnnotationToUpdate = info;
+							currentDefectToUpdate = getAnnotationDetails((info.order - 1));
+							setFormDetails(currentDefectToUpdate);
+						}
+					});
+				}
 			});
-			document.getElementById('loadModel').addEventListener('click', function () {
-				onLoadmodel();
-			});
-			$('#loadAnno').click(function () {
-				init();
-			});
-			// API
-			function onSuccess(api) {
-				sketchFabAPI = api;
-				api.addEventListener('annotationSelect', function (index) {
-					if (index != -1) {
-						api.getAnnotation(index, function (err, info) {
-							if (info) {
-								currentAnnotationToUpdate = info;
-								currentDefectToUpdate = getAnnotationDetails((info.order - 1));
-								setFormDetails(currentDefectToUpdate);
+			api.addEventListener('click', function (info) {
+				if (info.position2D !== null && markDefectMode) {
+					markDefectMode = false;
+					positionX = info.position3D[0];
+					positionY = info.position3D[1];
+					positionZ = info.position3D[2];
+					normalX = info.normal[0];
+					normalY = info.normal[1];
+					normalZ = info.normal[2];
+					api.getCameraLookAt(function (err, camera) {
+						cameraPosition = camera.position;
+						cameraTarget = camera.target;
+						document.getElementById('saveAnno').disabled = false;
+						document.getElementById('annoRes').style.display = "hidden";
+						currentAnnotationToCreate = {
+							pox: positionX,
+							poy: positionY,
+							poz: positionZ,
+							nox: normalX,
+							noy: normalY,
+							noz: normalZ,
+							camPos: cameraPosition,
+							camTarget: cameraTarget,
+							title: currentDefectId + 1,
+							content: 'Defect Description',
+							date: '',
+							classification: '',
+							damagedComponent: '',
+							mobileElement: '',
+							locationSide: '',
+							damageType: '',
+							reference: '',
+							reportedBy: '',
+							status: '',
+							owner: '',
+							references: '',
+							repairTypeText: ''
+						};
+						var modelDetails;
+						api.createAnnotation(
+							[currentAnnotationToCreate.pox, currentAnnotationToCreate.poy, currentAnnotationToCreate.poz],
+							[currentAnnotationToCreate.nox, currentAnnotationToCreate.noy, currentAnnotationToCreate.noz],
+							currentAnnotationToCreate.camPos,
+							currentAnnotationToCreate.camTarget,
+							currentAnnotationToCreate.title,
+							currentAnnotationToCreate.content,
+							function (index) {
+								api.updateAnnotation(index, {
+									title: currentAnnotationToCreate.title,
+									content: currentAnnotationToCreate.content
+								});
+								currentAnnotationToUpdate = currentAnnotationToCreate;
+								var copiedObject = jQuery.extend(true, {}, currentAnnotationToCreate)
+								checkForModel(copiedObject);
 							}
-						});
-					}
+						);
+						//modelsList.push(modelDetails);
+						//setFormDetails(currentAnnotationToCreate);
+					});
+				}
+			}, {
+				pick: 'fast'
+			});
+			api.start(function () {
+				console.log('started');
+				document.getElementById('saveAnno').addEventListener('click', function () {
+					currentDefectToUpdate.title = $('#defectIdText').val();
+					currentDefectToUpdate.content = $('#damagedDescriptionText').val();
+					currentDefectToUpdate.date = $('#dateText').val();
+					currentDefectToUpdate.classification = $('#classificationText').val();
+					currentDefectToUpdate.damagedComponent = $('#damagedComponentText').val();
+					currentDefectToUpdate.mobileElement = $('#mobileElementText').val();
+					currentDefectToUpdate.locationSide = $('#locationSideText').val();
+					currentDefectToUpdate.damageType = $('#damageTypeText').val();
+					currentDefectToUpdate.reference = $('#referenceText').val();
+					currentDefectToUpdate.reportedBy = $('#reportedByText').val();
+					currentDefectToUpdate.status = $('#statusText').val();
+					currentDefectToUpdate.owner = $('#ownerText').val();
+					currentDefectToUpdate.references = $('#referencesText').val();
+					currentDefectToUpdate.repairType = $('#repairTypeText').val();
+					// currentDefectToUpdate.hangerLocation = $('#hangerLocation').val();
+					// currentDefectToUpdate.date = $('#dateText').val();
+					// currentDefectToUpdate.user = $('#userName').val();
+					api.updateAnnotation(currentAnnotationToUpdate.order, {
+						title: currentDefectToUpdate.title,
+						content: currentDefectToUpdate.content
+					});
 				});
-				api.addEventListener('click', function (info) {
-					if (info.position2D !== null && markDefectMode) {
-						markDefectMode = false;
-						positionX = info.position3D[0];
-						positionY = info.position3D[1];
-						positionZ = info.position3D[2];
-						normalX = info.normal[0];
-						normalY = info.normal[1];
-						normalZ = info.normal[2];
-						api.getCameraLookAt(function (err, camera) {
-							cameraPosition = camera.position;
-							cameraTarget = camera.target;
-							document.getElementById('saveAnno').disabled = false;
-							document.getElementById('annoRes').style.display = "hidden";
-							currentAnnotationToCreate = {
-								pox: positionX,
-								poy: positionY,
-								poz: positionZ,
-								nox: normalX,
-								noy: normalY,
-								noz: normalZ,
-								camPos: cameraPosition,
-								camTarget: cameraTarget,
-								title: 'Title',
-								content: 'Description',
-								user: 'User',
-								date: '10/18/2018',
-								hangerLocation: 'HangerLocation'
-							};
-							var modelDetails;
+
+				api.addEventListener('viewerready', function () {
+					getModelsDetails();
+					var currentModel = modelsList.filter(obj => {
+						return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected &&
+							obj.registrationCode === currentRegistrationCodeSelected)
+					});
+					if (currentModel.length != 0) {
+						currentModel[0].defectsDetails.forEach(function (obj) {
+							console.log('inside create', obj)
 							api.createAnnotation(
-								[currentAnnotationToCreate.pox, currentAnnotationToCreate.poy, currentAnnotationToCreate.poz],
-								[currentAnnotationToCreate.nox, currentAnnotationToCreate.noy, currentAnnotationToCreate.noz],
-								currentAnnotationToCreate.camPos,
-								currentAnnotationToCreate.camTarget,
-								currentAnnotationToCreate.title,
-								currentAnnotationToCreate.content,
+								[obj.pox, obj.poy, obj.poz],
+								[obj.nox, obj.noy, obj.noz],
+								obj.camPos,
+								obj.camTarget,
+								obj.title,
+								obj.content,
 								function (index) {
-									api.updateAnnotation(index, {
-										title: currentAnnotationToCreate.title,
-										content: currentAnnotationToCreate.content
-									});
-									currentAnnotationToUpdate = currentAnnotationToCreate;
-									var copiedObject = jQuery.extend(true, {}, currentAnnotationToCreate)
-									checkForModel(copiedObject);
+									// console.log('added hotspot: ' + index);
+									// api.removeAnnotation(index);
 								}
 							);
 						});
 					}
-				}, {
-					pick: 'fast'
 				});
-				api.start(function () {
-					console.log('started');
-					document.getElementById('saveAnno').addEventListener('click', function () {
-						currentDefectToUpdate.title = $('#annoName').val();
-						currentDefectToUpdate.content = $('#annoDescr').val();
-						currentDefectToUpdate.hangerLocation = $('#hangerLocation').val();
-						currentDefectToUpdate.date = $('#dateText').val();
-						currentDefectToUpdate.user = $('#userName').val();
-						api.updateAnnotation(currentAnnotationToUpdate.order, {
-							title: currentDefectToUpdate.title,
-							content: currentDefectToUpdate.content
-						});
-					});
+			});
+		};
+		// Methods
+		function getAnnotationDetails(index) {
+			var currentModel = modelsList.filter(obj => {
+				return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected && obj.registrationCode ===
+					currentRegistrationCodeSelected)
+			});
+			return currentModel[0].defectsDetails[index];
+		}
 
-					api.addEventListener('viewerready', function () {
-						getModelsDetails();
-						var currentModel = modelsList.filter(obj => {
-							return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected &&
-								obj.registrationCode === currentRegistrationCodeSelected)
-						});
-						if (currentModel.length != 0) {
-							currentModel[0].defectsDetails.forEach(function (obj) {
-								console.log('inside create', obj)
-								api.createAnnotation(
-									[obj.pox, obj.poy, obj.poz],
-									[obj.nox, obj.noy, obj.noz],
-									obj.camPos,
-									obj.camTarget,
-									obj.title,
-									obj.content,
-									function (index) {
-										// console.log('added hotspot: ' + index);
-										// api.removeAnnotation(index);
-									}
-								);
-							});
-						}
-					});
-				});
-			};
-			// Methods
-			function getAnnotationDetails(index) {
-				var currentModel = modelsList.filter(obj => {
-					return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected && obj.registrationCode ===
-						currentRegistrationCodeSelected)
-				});
-				return currentModel[0].defectsDetails[index];
+		function checkForModel(annotationToAdd) {
+			var currentModel = modelsList.filter(obj => {
+				return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected && obj.registrationCode ===
+					currentRegistrationCodeSelected)
+			});
+			if (currentModel.length === 0) {
+				modelDetails = {
+					aircraftmodel: currentAircraftmodelSelected,
+					airline: currentAirlineSelected,
+					registrationCode: currentRegistrationCodeSelected,
+					defectsDetails: [annotationToAdd]
+				};
+				currentDefectToUpdate = modelDetails;
+				modelsList.push(modelDetails);
+			} else {
+				currentDefectToUpdate = currentModel[0];
+				currentModel[0].defectsDetails.push(annotationToAdd);
 			}
+		};
 
-			function checkForModel(annotationToAdd) {
-				var currentModel = modelsList.filter(obj => {
-					return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected && obj.registrationCode ===
-						currentRegistrationCodeSelected)
-				});
-				if (currentModel.length === 0) {
-					modelDetails = {
-						aircraftmodel: currentAircraftmodelSelected,
-						airline: currentAirlineSelected,
-						registrationCode: currentRegistrationCodeSelected,
-						defectsDetails: [annotationToAdd]
-					};
-					currentDefectToUpdate = modelDetails;
-					modelsList.push(modelDetails);
-				} else {
-					currentDefectToUpdate = currentModel[0];
-					currentModel[0].defectsDetails.push(annotationToAdd);
-				}
-			};
+		function clearForm() {
+			$('#defectIdText').val('');
+			$('#damagedDescriptionText').val('');
+			$('#dateText').val('');
+			$('#classificationText').val('');
+			$('#damagedComponentText').val('');
+			$('#mobileElementText').val('');
+			$('#locationSideText').val('');
+			$('#damageTypeText').val('');
+			$('#referenceText').val('');
+			$('#reportedByText').val('');
+			$('#statusText').val('');
+			$('#ownerText').val('');
+			$('#referencesText').val('');
+			$('#repairTypeText').val('');
+			sketchFabAPI.unselectAnnotation();
+			document.getElementById('saveAnno').disabled = true;
+		};
 
-			function clearForm() {
-				$('#annoName').val('');
-				$('#annoDescr').val('');
-				$('#hangerLocation').val('');
-				$('#dateText').val('');
-				$('#userName').val('');
-				sketchFabAPI.unselectAnnotation();
-				document.getElementById('saveAnno').disabled = true;
-			};
+		function setFormDetails(info) {
+			if (info) {
+				debugger;
+				$('#defectIdText').val(info.title);
+				$('#damagedDescriptionText').val(info.content);
+				$('#dateText').val(info.date);
+				$('#classificationText').val(info.classification);
+				$('#damagedComponentText').val(info.damagedComponent);
+				$('#mobileElementText').val(info.mobileElement);
+				$('#locationSideText').val(info.locationSide);
+				$('#damageTypeText').val(info.damageType);
+				$('#referenceText').val(info.reference);
+				$('#reportedByText').val(info.reportedBy);
+				$('#statusText').val(info.status);
+				$('#ownerText').val(info.owner);
+				$('#referencesText').val(info.references);
+				$('#repairTypeText').val(info.repairType);
+			}
+		};
 
-			function setFormDetails(info) {
-				if (info) {
-					$('#annoName').val(info.title);
-					$('#annoDescr').val(info.content);
-					$('#hangerLocation').val(info.hangerLocation);
-					$('#dateText').val(info.date);
-					$('#userName').val(info.user);
-				}
-			};
+		function onLoadmodel() {
+			clearForm();
+			getModelsDetails();
+			document.getElementById('api-frame').src += '';
+			client = new Sketchfab(document.getElementById('api-frame'));
+			//document.getElementById('api-frame').contentWindow.location.reload();
+			client.init(urlid, {
+				success: onSuccess,
+				error: onError,
+				annotation: 0,
+				annotations_visible: 1,
+				ui_controls: 0
 
-			function onLoadmodel() {
-				clearForm();
-				getModelsDetails();
-				document.getElementById('api-frame').src += '';
-				client = new Sketchfab(document.getElementById('api-frame'));
-				//document.getElementById('api-frame').contentWindow.location.reload();
+			});
+		};
+
+		function onError(error) {
+			console.log(error);
+		};
+
+		function getModelsDetails() {
+			currentAircraftmodelSelected = $('#aircraftmodel').val();
+			currentAirlineSelected = $('#airline').val();
+			currentRegistrationCodeSelected = $('#registration').val();
+		};
+
+		function init() {
+			if (modelsList.length === 0) {
+				modelDetails = {
+					aircraftmodel: currentAircraftmodelSelected,
+					airline: currentAirlineSelected,
+					registrationCode: currentRegistrationCodeSelected,
+					defectsDetails: []
+				};
+				modelsList.push(modelDetails);
 				client.init(urlid, {
 					success: onSuccess,
 					error: onError,
@@ -531,39 +756,10 @@
 					ui_controls: 0
 
 				});
-			};
-
-			function onError(error) {
-				console.log(error);
-			};
-
-			function getModelsDetails() {
-				currentAircraftmodelSelected = $('#aircraftmodel').val();
-				currentAirlineSelected = $('#airline').val();
-				currentRegistrationCodeSelected = $('#registration').val();
-			};
-
-			function init() {
-				if (modelsList.length === 0) {
-					modelDetails = {
-						aircraftmodel: currentAircraftmodelSelected,
-						airline: currentAirlineSelected,
-						registrationCode: currentRegistrationCodeSelected,
-						defectsDetails: []
-					};
-					modelsList.push(modelDetails);
-					client.init(urlid, {
-						success: onSuccess,
-						error: onError,
-						annotation: 0,
-						annotations_visible: 1,
-						ui_controls: 0
-
-					});
-				}
-			};
-			init();
-		</script>
+			}
+		};
+		init();
+	</script>
 
 </body>
 

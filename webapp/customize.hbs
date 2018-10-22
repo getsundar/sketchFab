@@ -577,18 +577,12 @@
 							currentAnnotationToCreate.camTarget,
 							currentAnnotationToCreate.title,
 							currentAnnotationToCreate.content,
-							function (index) {
-								api.updateAnnotation(index, {
-									title: currentAnnotationToCreate.title,
-									content: currentAnnotationToCreate.content
-								});
+							function (index) {							
 								currentAnnotationToUpdate = currentAnnotationToCreate;
 								var copiedObject = jQuery.extend(true, {}, currentAnnotationToCreate)
 								checkForModel(copiedObject);
 							}
-						);
-						//modelsList.push(modelDetails);
-						//setFormDetails(currentAnnotationToCreate);
+						);						
 					});
 				}
 			}, {
@@ -695,8 +689,7 @@
 		};
 
 		function setFormDetails(info) {
-			if (info) {
-				debugger;
+			if (info) {				
 				$('#defectIdText').val(info.title);
 				$('#damagedDescriptionText').val(info.content);
 				$('#dateText').val(info.date);

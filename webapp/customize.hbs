@@ -492,7 +492,7 @@
 		normalX = 0;
 		normalY = 0;
 		normalZ = 0;
-		currentDefectId = 2;
+		currentDefectId = 1;
 		var currentAircraftmodelSelected;
 		var currentAirlineSelected;
 		var currentRegistrationCodeSelected;
@@ -525,9 +525,6 @@
 					api.getAnnotation(index, function (err, info) {
 						if (info) {
 							currentAnnotationToUpdate = info;
-							if (info.order === undefined) {
-								info.order = 0;
-							}
 							currentDefectToUpdate = getAnnotationDetails((info.order));
 							setFormDetails(currentDefectToUpdate);
 						}
@@ -580,7 +577,7 @@
 							currentAnnotationToCreate.camTarget,
 							currentAnnotationToCreate.title,
 							currentAnnotationToCreate.content,
-							function (index) {
+							function (err, index) {
 								currentAnnotationToUpdate = currentAnnotationToCreate;
 								var copiedObject = jQuery.extend(true, {}, currentAnnotationToCreate)
 								checkForModel(copiedObject);
@@ -622,57 +619,83 @@
 					var currentModel = modelsList.filter(obj => {
 						return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected &&
 							obj.registrationCode === currentRegistrationCodeSelected)
-					});					
-					if (currentModel.length === 0) {
-						api.getAnnotationList(function (err, list) {
-							let annotationObject = {
-								order: 0,
-								title: list[0].name,
-								content: list[0].content.raw,
-								date: '',
-								classification: '',
-								damagedComponent: '',
-								mobileElement: '',
-								locationSide: '',
-								damageType: '',
-								reference: '',
-								reportedBy: '',
-								status: '',
-								owner: '',
-								references: '',
-								repairTypeText: ''
-							}
-							modelDetails = {
-								aircraftmodel: currentAircraftmodelSelected,
-								airline: currentAirlineSelected,
-								registrationCode: currentRegistrationCodeSelected,
-								defectsDetails: [annotationObject]
-							};
-							modelsList.push(modelDetails);
-						});
-					} else {
-						currentModel[0].defectsDetails.forEach(function (obj) {
-							if (obj.order !== 0) {
-								api.createAnnotation(
-									[obj.pox, obj.poy, obj.poz],
-									[obj.nox, obj.noy, obj.noz],
-									obj.camPos,
-									obj.camTarget,
-									obj.title,
-									obj.content,
-									function (index) {
-										// console.log('added hotspot: ' + index);
-										// api.removeAnnotation(index);
-									}
-								);
-							} else {
-								api.updateAnnotation(0, {
-									title: obj.title,
-									content: obj.content
-								});
-							}
-						});
-					}
+					});
+					api.removeAnnotation(0);
+					currentModel[0].defectsDetails.forEach(function (obj) {
+						if (obj.order !== 0) {
+							api.createAnnotation(
+								[obj.pox, obj.poy, obj.poz],
+								[obj.nox, obj.noy, obj.noz],
+								obj.camPos,
+								obj.camTarget,
+								obj.title,
+								obj.content,
+								function (index) {
+									// console.log('added hotspot: ' + index);
+									// api.removeAnnotation(index);
+								}
+							);
+						} else {
+							api.updateAnnotation(0, {
+								title: obj.title,
+								content: obj.content
+							});
+						}
+					});
+					// if (currentModel.length === 0) 
+					// {
+					// 	api.getAnnotationList(function (err, list) {
+					// 		let annotationObject = {
+					// 			order: 0,
+					// 			title: list[0].name,
+					// 			content: list[0].content.raw,
+					// 			date: '',
+					// 			classification: '',
+					// 			damagedComponent: '',
+					// 			mobileElement: '',
+					// 			locationSide: '',
+					// 			damageType: '',
+					// 			reference: '',
+					// 			reportedBy: '',
+					// 			status: '',
+					// 			owner: '',
+					// 			references: '',
+					// 			repairTypeText: ''
+					// 		}
+					// 		modelDetails = {
+					// 			aircraftmodel: currentAircraftmodelSelected,
+					// 			airline: currentAirlineSelected,
+					// 			registrationCode: currentRegistrationCodeSelected,
+					// 			defectsDetails: [annotationObject]
+					// 		};
+					// 		modelsList.push(modelDetails);
+					// 	});
+					// } 
+					// else 
+					// {
+					// 	currentModel[0].defectsDetails.forEach(function (obj) {
+					// 		if (obj.order !== 0) {
+					// 			api.createAnnotation(
+					// 				[obj.pox, obj.poy, obj.poz],
+					// 				[obj.nox, obj.noy, obj.noz],
+					// 				obj.camPos,
+					// 				obj.camTarget,
+					// 				obj.title,
+					// 				obj.content,
+					// 				function (index) {
+					// 					// console.log('added hotspot: ' + index);
+					// 					// api.removeAnnotation(index);
+					// 				}
+					// 			);
+					// 		} else {
+					// 			api.updateAnnotation(0, {
+					// 				title: obj.title,
+					// 				content: obj.content
+					// 			});
+					// 		}
+					// 	});
+					// }
+					// api.removeAnnotation(0);
 				});
 			});
 		};

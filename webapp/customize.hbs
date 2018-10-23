@@ -340,7 +340,7 @@
 												<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Defect Details</a>
 											</h4>
 										</div>
-										<div id="collapseOne" class="panel-collapse collapse">
+										<div id="collapseOne" class="panel-collapse collapse in">
 											<div class="panel-body">
 												<div class="card wow fadeInRight" data-wow-delay="0.3s">
 													<div class="card-body z-depth-2">
@@ -492,7 +492,7 @@
 		normalX = 0;
 		normalY = 0;
 		normalZ = 0;
-		currentDefectId = 0;
+		currentDefectId = 2;
 		var currentAircraftmodelSelected;
 		var currentAirlineSelected;
 		var currentRegistrationCodeSelected;
@@ -554,7 +554,7 @@
 							noz: normalZ,
 							camPos: cameraPosition,
 							camTarget: cameraTarget,
-							title: currentDefectId + 1,
+							title: currentDefectId++,
 							content: 'Defect Description',
 							date: '',
 							classification: '',
@@ -577,7 +577,8 @@
 							currentAnnotationToCreate.camTarget,
 							currentAnnotationToCreate.title,
 							currentAnnotationToCreate.content,
-							function (index) {							
+							function (index) {	
+														
 								currentAnnotationToUpdate = currentAnnotationToCreate;
 								var copiedObject = jQuery.extend(true, {}, currentAnnotationToCreate)
 								checkForModel(copiedObject);

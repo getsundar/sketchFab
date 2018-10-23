@@ -622,7 +622,7 @@
 					var currentModel = modelsList.filter(obj => {
 						return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected &&
 							obj.registrationCode === currentRegistrationCodeSelected)
-					});
+					});					
 					if (currentModel.length === 0) {
 						api.getAnnotationList(function (err, list) {
 							let annotationObject = {
@@ -665,6 +665,11 @@
 										// api.removeAnnotation(index);
 									}
 								);
+							} else {
+								api.updateAnnotation(0, {
+									title: obj.title,
+									content: obj.content
+								});
 							}
 						});
 					}
@@ -677,7 +682,6 @@
 				return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected && obj.registrationCode ===
 					currentRegistrationCodeSelected)
 			});
-			debugger;
 			return currentModel[0].defectsDetails[index];
 		}
 

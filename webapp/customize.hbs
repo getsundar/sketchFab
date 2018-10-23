@@ -441,7 +441,7 @@
 									</div>
 								</div>
 								<div class="text-center mt-10 mt-3">
-									<button style="margin-bottom: 10px;" class="btn-klm" id="saveAnno" disabled=true>Save</button>
+									<button style="margin-bottom: 10px;" class="btn-klm" id="saveAnno">Save</button>
 									<small id="annoRes" class="form-text text-muted" style="display: none; color: green">Saved Successfully</small>
 								</div>
 							</div>
@@ -525,7 +525,10 @@
 					api.getAnnotation(index, function (err, info) {
 						if (info) {
 							currentAnnotationToUpdate = info;
-							currentDefectToUpdate = getAnnotationDetails((info.order - 1));
+							if (info.order === undefined) {
+								info.order = 0;
+							}
+							currentDefectToUpdate = getAnnotationDetails((info.order));
 							setFormDetails(currentDefectToUpdate);
 						}
 					});
@@ -577,13 +580,12 @@
 							currentAnnotationToCreate.camTarget,
 							currentAnnotationToCreate.title,
 							currentAnnotationToCreate.content,
-							function (index) {	
-														
+							function (index) {
 								currentAnnotationToUpdate = currentAnnotationToCreate;
 								var copiedObject = jQuery.extend(true, {}, currentAnnotationToCreate)
 								checkForModel(copiedObject);
 							}
-						);						
+						);
 					});
 				}
 			}, {
@@ -621,21 +623,49 @@
 						return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected &&
 							obj.registrationCode === currentRegistrationCodeSelected)
 					});
-					if (currentModel.length != 0) {
+					if (currentModel.length === 0) {
+						api.getAnnotationList(function (err, list) {
+							let annotationObject = {
+								order: 0,
+								title: list[0].name,
+								content: list[0].content.raw,
+								date: '',
+								classification: '',
+								damagedComponent: '',
+								mobileElement: '',
+								locationSide: '',
+								damageType: '',
+								reference: '',
+								reportedBy: '',
+								status: '',
+								owner: '',
+								references: '',
+								repairTypeText: ''
+							}
+							modelDetails = {
+								aircraftmodel: currentAircraftmodelSelected,
+								airline: currentAirlineSelected,
+								registrationCode: currentRegistrationCodeSelected,
+								defectsDetails: [annotationObject]
+							};
+							modelsList.push(modelDetails);
+						});
+					} else {
 						currentModel[0].defectsDetails.forEach(function (obj) {
-							console.log('inside create', obj)
-							api.createAnnotation(
-								[obj.pox, obj.poy, obj.poz],
-								[obj.nox, obj.noy, obj.noz],
-								obj.camPos,
-								obj.camTarget,
-								obj.title,
-								obj.content,
-								function (index) {
-									// console.log('added hotspot: ' + index);
-									// api.removeAnnotation(index);
-								}
-							);
+							if (obj.order !== 0) {
+								api.createAnnotation(
+									[obj.pox, obj.poy, obj.poz],
+									[obj.nox, obj.noy, obj.noz],
+									obj.camPos,
+									obj.camTarget,
+									obj.title,
+									obj.content,
+									function (index) {
+										// console.log('added hotspot: ' + index);
+										// api.removeAnnotation(index);
+									}
+								);
+							}
 						});
 					}
 				});
@@ -647,6 +677,7 @@
 				return (obj.aircraftmodel === currentAircraftmodelSelected && obj.airline === currentAirlineSelected && obj.registrationCode ===
 					currentRegistrationCodeSelected)
 			});
+			debugger;
 			return currentModel[0].defectsDetails[index];
 		}
 
@@ -686,11 +717,11 @@
 			$('#referencesText').val('');
 			$('#repairTypeText').val('');
 			sketchFabAPI.unselectAnnotation();
-			document.getElementById('saveAnno').disabled = true;
+			//document.getElementById('saveAnno').disabled = true;
 		};
 
 		function setFormDetails(info) {
-			if (info) {				
+			if (info) {
 				$('#defectIdText').val(info.title);
 				$('#damagedDescriptionText').val(info.content);
 				$('#dateText').val(info.date);
@@ -735,23 +766,14 @@
 		};
 
 		function init() {
-			if (modelsList.length === 0) {
-				modelDetails = {
-					aircraftmodel: currentAircraftmodelSelected,
-					airline: currentAirlineSelected,
-					registrationCode: currentRegistrationCodeSelected,
-					defectsDetails: []
-				};
-				modelsList.push(modelDetails);
-				client.init(urlid, {
-					success: onSuccess,
-					error: onError,
-					annotation: 0,
-					annotations_visible: 1,
-					ui_controls: 0
+			client.init(urlid, {
+				success: onSuccess,
+				error: onError,
+				annotation: 0,
+				annotations_visible: 1,
+				ui_controls: 0
 
-				});
-			}
+			});
 		};
 		init();
 	</script>

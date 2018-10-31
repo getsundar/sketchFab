@@ -631,6 +631,7 @@
 							currentAnnotationToCreate.title,
 							currentAnnotationToCreate.content,
 							function (err, index) {
+								api.gotoAnnotation(index);
 								currentAnnotationToUpdate = currentAnnotationToCreate;
 								var copiedObject = jQuery.extend(true, {}, currentAnnotationToCreate)
 								checkForModel(copiedObject);
@@ -664,7 +665,7 @@
 						data: {
 							data: modelsList
 						},
-						success: function (err, obj) {
+						success: function (err, obj) {							
 							api.updateAnnotation(currentAnnotationToUpdate.order, {
 								title: currentDefectToUpdate.title,
 								content: currentDefectToUpdate.content

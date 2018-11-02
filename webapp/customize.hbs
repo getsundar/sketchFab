@@ -588,12 +588,14 @@
 				if (info.position2D !== null && markDefectMode) {
 					markDefectMode = false;
 					positionX = info.position3D[0];
-					positionY = info.position3D[1];
+					positionY = info.position3D[1]-100;
 					positionZ = info.position3D[2];
 					normalX = info.normal[0];
 					normalY = info.normal[1];
 					normalZ = info.normal[2];
 					api.getCameraLookAt(function (err, camera) {
+						console.log("Camera::" + JSON.stringify(camera));
+						console.log("Info:::" + JSON.stringify(info));
 						cameraPosition = camera.position;
 						cameraTarget = camera.target;
 						document.getElementById('saveAnno').disabled = false;
@@ -665,7 +667,7 @@
 						data: {
 							data: modelsList
 						},
-						success: function (err, obj) {							
+						success: function (err, obj) {
 							api.updateAnnotation(currentAnnotationToUpdate.order, {
 								title: currentDefectToUpdate.title,
 								content: currentDefectToUpdate.content

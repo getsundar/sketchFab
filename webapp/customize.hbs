@@ -588,8 +588,11 @@
 				if (info.position2D !== null && markDefectMode) {
 					markDefectMode = false;
 					positionX = info.position3D[0];
-					positionY = info.position3D[1]-100;
+					positionY = info.position3D[1] - 1;
 					positionZ = info.position3D[2];
+					if (info.normal[0] > 0) {
+						info.normal[0] *= -1;
+					}
 					normalX = info.normal[0];
 					normalY = info.normal[1];
 					normalZ = info.normal[2];

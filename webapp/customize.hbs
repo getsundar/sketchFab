@@ -845,27 +845,29 @@
 							obj.registrationCode === currentRegistrationCodeSelected)
 					});
 					api.removeAnnotation(0);
-					currentModel[0].defectsDetails.forEach(function (obj) {
-						if (obj.order !== 0) {
-							api.createAnnotation(
-								[obj.pox, obj.poy, obj.poz],
-								[obj.nox, obj.noy, obj.noz],
-								obj.camPos,
-								obj.camTarget,
-								obj.title,
-								obj.content,
-								function (index) {
-									// console.log('added hotspot: ' + index);
-									// api.removeAnnotation(index);
-								}
-							);
-						} else {
-							api.updateAnnotation(0, {
-								title: obj.title,
-								content: obj.content
-							});
-						}
-					});
+					if (currentModel[0]) {
+						currentModel[0].defectsDetails.forEach(function (obj) {
+							if (obj.order !== 0) {
+								api.createAnnotation(
+									[obj.pox, obj.poy, obj.poz],
+									[obj.nox, obj.noy, obj.noz],
+									obj.camPos,
+									obj.camTarget,
+									obj.title,
+									obj.content,
+									function (index) {
+										// console.log('added hotspot: ' + index);
+										// api.removeAnnotation(index);
+									}
+								);
+							} else {
+								api.updateAnnotation(0, {
+									title: obj.title,
+									content: obj.content
+								});
+							}
+						});
+					}
 				});
 			});
 		};

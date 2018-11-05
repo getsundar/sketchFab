@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({
 	extended: true
 }));
 app.use(bodyParser.json());
+app.use(express.static('webapp'));
 
 // Webapp, some pages, like the homepage, need to be rendered server side
 var hbs = exphbs.create({

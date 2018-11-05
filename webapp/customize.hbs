@@ -428,7 +428,9 @@
 				<a class="navbar-brand brand" href="#"></a>
 			</div> -->
 			<ul class="nav navbar-nav structural-h2">
-				<li class="active"><div class="head-sdr">Defects</div></li>
+				<li class="active">
+					<div class="head-sdr">Defects</div>
+				</li>
 				<li><a href="#">Maintenance</a></li>
 				<li><a href="#">Organisation</a></li>
 				<li><a href="#">Processs & Tools</a></li>
@@ -622,7 +624,9 @@
 	<!-- Mask & flexbox options-->
 	</div>
 	<!-- Full Page Intro -->
-	<div id="toast"><div id="desc">Saved succesfully</div></div>
+	<div id="toast">
+		<div id="desc">Saved succesfully</div>
+	</div>
 	<footer>
 		<div class="g-legal-footer">
 			<div class="g-grid--row">
@@ -684,21 +688,22 @@
 		});
 		// API
 		function onSuccess(api) {
+			document.cookie ="optimizelyEndUserId=oeu1536735583304r0.11081774740281514; optimizelyBuckets=%7B%7D; _ga=GA1.2.1538985096.1536735584; show_viewer_hint=0; optimizelySegments=%7B%221173460672%22%3A%22gc%22%2C%221178430776%22%3A%22false%22%2C%221181420366%22%3A%22referral%22%2C%226019370292%22%3A%22none%22%7D; theatre_mode=false; __adroll_fpc=5a569e7eed3bb62fe864ca9fd59193a9; _gid=GA1.2.447766081.1541406941; _fbp=fb.1.1541406941568.1000764725; _gat=1; sb_csrftoken=z4wETh5qjoOX6FcdPBAZR1b7rmJfk2zUx2wiac9IFQQvFZVlzQnQO4MxviHEKMkM; sb_sessionid=nhf4wk6ulryytui275mtyi9l8sl61jdh; user_uid=1deb9838db064ad59afed264fc80f3e4; mp_19e13788a6453a55d8a020934e944286_mixpanel=%7B%22distinct_id%22%3A%20%221deb9838db064ad59afed264fc80f3e4%22%2C%22User%20UID%22%3A%20%221deb9838db064ad59afed264fc80f3e4%22%2C%22Account%22%3A%20%22free%22%2C%22Billing%20Cycle%22%3A%20null%2C%22User%20Segment%20Name%22%3A%20%22Other%22%2C%22User%20Segment%20Kind%22%3A%20%22Individual%22%2C%22%24initial_referrer%22%3A%20%22https%3A%2F%2Fsketchfab.com%2F%3Flogged_out%3D1%22%2C%22%24initial_referring_domain%22%3A%20%22sketchfab.com%22%2C%22utm_source%22%3A%20%22%22%2C%22utm_medium%22%3A%20%22%22%2C%22utm_campaign%22%3A%20%22%22%2C%22utm_content%22%3A%20%22%22%2C%22utm_term%22%3A%20%22%22%2C%22%24user_id%22%3A%20%221deb9838db064ad59afed264fc80f3e4%22%7D; __ar_v4=V3YEVSD6VRDM7BBPBTSIKS%3A20181015%3A305%7CBTTLAXI76RCPBMZWPRYNN4%3A20181015%3A305%7C6DSEHZ5ZZVGPDJVB6WFNXZ%3A20181015%3A305";
 			sketchFabAPI = api;
 			api.addEventListener('annotationSelect', function (index) {
 				if (index != -1) {
 					api.getAnnotation(index, function (err, info) {
 						if (info) {
-							$('.panel-collapse').each(function(){
-								if($(this).hasClass('in') && !$(this).hasClass('first')){
+							$('.panel-collapse').each(function () {
+								if ($(this).hasClass('in') && !$(this).hasClass('first')) {
 									$(this).collapse('toggle');
-							}
+								}
 							});
 							/*setTimeout(function(){
 								$("#collapseOne").collapse('toggle');
 							},500);*/
 
-							if(!$("#collapseOne").hasClass('in')){
+							if (!$("#collapseOne").hasClass('in')) {
 								$("#collapseOne").collapse('toggle');
 							}
 							currentAnnotationToUpdate = info;
@@ -944,13 +949,23 @@
 		};
 
 		function launch_toast() {
-		
-    	var x = document.getElementById("toast")
-    	x.className = "show";
-    	setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+
+			var x = document.getElementById("toast")
+			x.className = "show";
+			setTimeout(function () {
+				x.className = x.className.replace("show", "");
+			}, 2000);
 		}
 
 		function init() {
+			$.ajax({
+						type: 'POST',
+						url: 'https://sketchfab.com/oauth2/token/',
+						data: 'grant_type=password&username=getsenthil1981@gmail.com&password=sketch@2018',
+						success: function (err, obj) {
+							debugger;
+						}
+					});
 			var jqxhr = jQuery.get("/getAnnotations", function (data) {
 					console.log('success');
 				})

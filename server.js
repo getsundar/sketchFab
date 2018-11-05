@@ -8,6 +8,11 @@ var bodyParser = require("body-parser");
 var app = express();
 var path = require('path');
 var exphbs = require('express-handlebars');
+app.use(function (req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+});
 
 app.use(bodyParser.urlencoded({
 	extended: true
@@ -87,7 +92,7 @@ app.get('/init', function (request, response) {
 })
 
 app.post('/saveAnnotation', function (req, res) {
-	const annotation = req.body;	
+	const annotation = req.body;
 	console.log("annotation:::::" + JSON.stringify(annotation.data));
 	if (annotation) {
 		var fs = require('fs');
